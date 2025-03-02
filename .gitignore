@@ -1,0 +1,27 @@
+# Ignore virtual environment directories
+venv/
+env/
+Include/
+Lib/
+Scripts/
+share/
+pyvenv.cfg
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore test coverage and pytest cache
+.coverage
+.pytest_cache/
+
+# Ignore Python package metadata
+*.egg-info/
+*.dist-info/
+
+# Ignore temporary or log files
+*.log
+.DS_Store
+Thumbs.db
