@@ -28,4 +28,14 @@ def test_tokenize_texts():
 
 def test_preprocess_data(sample_data: pd.DataFrame):
     """Test dataset preprocessing (cleaning and splitting)."""
-    pass
+    train_df, val_df = preprocess_data(sample_data, test_size=0.2)
+
+    assert isinstance(train_df, pd.DataFrame)
+    assert isinstance(val_df, pd.DataFrame)
+    
+    assert 'content' in train_df.columns
+    assert 'label' in train_df.columns
+    assert 'content' in val_df.columns
+    assert 'label' in val_df.columns
+    
+    assert len(train_df) > len(val_df)  # Training set should be larger

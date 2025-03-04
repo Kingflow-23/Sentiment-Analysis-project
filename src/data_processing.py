@@ -59,4 +59,10 @@ def preprocess_data(df: pd.DataFrame, test_size: float=0.2, max_length: int=128)
     Returns:
         tuple: (train_df, val_df)
     """
-    pass
+    # Ensure content column is cleaned
+    df['content'] = df['content'].apply(clean_text)
+
+    # Split data into training and validation sets
+    train_df, val_df = train_test_split(df, test_size=test_size, stratify=df['label'], random_state=42)
+
+    return train_df, val_df
