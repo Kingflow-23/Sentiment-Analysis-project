@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 
 def clean_text(text: str) -> str:
@@ -11,7 +12,16 @@ def clean_text(text: str) -> str:
     Returns:
         str: Cleaned text.
     """
-    pass
+    if not isinstance(text, str):
+        return ""  # Handle missing or non-string values
+
+    text = text.lower()  # Convert to lowercase
+    text = re.sub(r'<.*?>', '', text)  # Remove HTML tags
+    text = re.sub(r'http\S+|www\S+', '', text)  # Remove URLs
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)  # Remove special characters
+    text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
+    
+    return text
 
 def tokenize_texts(texts: list, max_length: int=128) -> dict:
     """
@@ -31,7 +41,7 @@ def preprocess_data(df: pd.DataFrame, test_size: float=0.2, max_length: int=128)
     Cleans, tokenizes, and splits the dataset into training and validation sets.
 
     Args:
-        df (pd.DataFrame): Input dataset with 'text' and 'label' columns.
+        df (pd.DataFrame): Input dataset with 'content' and 'label' columns.
         test_size (float): Proportion of data for validation.
         max_length (int): Maximum token length.
 
