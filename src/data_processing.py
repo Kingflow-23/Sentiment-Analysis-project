@@ -1,5 +1,10 @@
 import re
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from transformers import AutoTokenizer
+
+# Load tokenizer for BERT
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
 def clean_text(text: str) -> str:
     """
@@ -34,7 +39,13 @@ def tokenize_texts(texts: list, max_length: int=128) -> dict:
     Returns:
         dict: Tokenized representation of input texts.
     """
-    pass
+    return tokenizer(
+        texts,
+        padding=True,
+        truncation=True,
+        max_length=max_length,
+        return_tensors="pt"
+    )
 
 def preprocess_data(df: pd.DataFrame, test_size: float=0.2, max_length: int=128) -> tuple:
     """

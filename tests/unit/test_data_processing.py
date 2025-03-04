@@ -19,7 +19,12 @@ def test_clean_text():
 
 def test_tokenize_texts():
     """Test tokenization output structure."""
-    pass
+    texts = ["Hello world!", "This is a test sentence."]
+    tokens = tokenize_texts(texts, max_length=10)
+    
+    assert 'input_ids' in tokens
+    assert 'attention_mask' in tokens
+    assert len(tokens['input_ids'][0]) > 0  # Ensure tokens are created
 
 def test_preprocess_data(sample_data: pd.DataFrame):
     """Test dataset preprocessing (cleaning and splitting)."""
