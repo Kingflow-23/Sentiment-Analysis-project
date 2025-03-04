@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 
 from src.data_processing import clean_text, tokenize_texts, preprocess_data
-from config import FAKE_DATASET
+from config import SENTIMENT_MAPPING, FAKE_DATASET
 
 @pytest.fixture
 def sample_data():
@@ -39,3 +39,27 @@ def test_preprocess_data(sample_data: pd.DataFrame):
     assert 'label' in val_df.columns
     
     assert len(train_df) > len(val_df)  # Training set should be larger
+
+def test_label_distribution(sample_data: pd.DataFrame):
+    """Test that label distribution is preserved after stratified splitting."""
+    train_df, val_df = preprocess_data(sample_data, test_size=0.2)
+
+    # Get unique labels from the original dataset, training set, and validation set
+    original_labels = set(sample_data["label"].unique())
+    train_labels = set(train_df["label"].unique())
+    val_labels = set(val_df["label"].unique())
+
+    # ✅ Ensure no label is completely lost in the train or val set
+    assert original_labels.issubset(train_labels.union(val_labels)), "Some labels are missing after split"
+    assert len(val_labels) > 0, "Validation set is empty"
+    
+def test_sentiment_mapping(sample_data: pd.DataFrame):
+    """Test sentiment mapping after processing."""
+    train_df, val_df = preprocess_data(sample_data, test_size=0.2)
+    
+    # Check that labels are mapped correctly using SENTIMENT_MAPPING
+    for label in train_df['label']:
+        assert SENTIMENT_MAPPING[label] in ["Really Negative", "Negative", "Neutral", "Positive", "Really Positive"]
+    
+    for label in val_df['label']:
+        assert SENTIMENT_MAPPING[label] in ["Really Negative", "Negative", "Neutral", "Positive", "Really Positive"]
