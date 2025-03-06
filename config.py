@@ -7,3 +7,11 @@ SENTIMENT_MAPPING = {
     4: "Positive",
     5: "Really Positive"
 }
+
+LABEL_MAPPING = {
+    1: 0,
+    2: 1,
+    3: 2,
+    4: 3,
+    5: 4
+}
