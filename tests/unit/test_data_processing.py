@@ -3,6 +3,7 @@ import pandas as pd
 
 from config import SENTIMENT_MAPPING
 from dataset_config import FAKE_DATASET
+
 from src.data_processing import clean_text, tokenize_texts, preprocess_data
 
 
@@ -141,8 +142,8 @@ def test_sentiment_mapping(sample_data_fake: pd.DataFrame):
     train_df, val_df = preprocess_data(sample_data_fake, test_size=0.2)
 
     # Check that labels are mapped correctly using SENTIMENT_MAPPING
-    for label in train_df["score"]:
-        assert SENTIMENT_MAPPING[label] in [
+    for score in train_df["score"]:
+        assert SENTIMENT_MAPPING[score+1] in [
             "Really Negative",
             "Negative",
             "Neutral",
@@ -150,8 +151,8 @@ def test_sentiment_mapping(sample_data_fake: pd.DataFrame):
             "Really Positive",
         ]
 
-    for label in val_df["score"]:
-        assert SENTIMENT_MAPPING[label] in [
+    for score in val_df["score"]:
+        assert SENTIMENT_MAPPING[score+1] in [
             "Really Negative",
             "Negative",
             "Neutral",
