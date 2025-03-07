@@ -1,5 +1,4 @@
 import os
-import torch
 
 # --------------------------------------------------------------------------
 # Define 5-class sentiment mapping
@@ -33,18 +32,3 @@ JSON_FILE_PATH = "dataset/test_datasets/data.json"
 XLSX_FILE_PATH = "dataset/test_datasets/data.xlsx"
 TXT_FILE_PATH = "dataset/test_datasets/data.txt"
 XML_FILE_PATH = "dataset/test_datasets/data.xml"
-
-# --------------------------------------------------------------------------
-# Model config
-MODEL_NAME = "bert-base-uncased"
-N_CLASSES = 5
-DROPOUT = 0.3
-LEARNING_RATE = 2e-5
-EPOCHS = 10
-BATCH_SIZE = 16
-MAX_LEN = 128
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-
-# Model
-MODEL_TRAINING_OUTPUT_DIR = "output/model_output/training"
-MODEL_EVALUATION_OUTPUT_DIR = "output/model_output/evaluation"
