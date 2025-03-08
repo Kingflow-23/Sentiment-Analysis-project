@@ -25,3 +25,7 @@ __pycache__/
 *.log
 .DS_Store
 Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints
+test.ipynb
+.ipynb_checkpoints/
