@@ -12,9 +12,9 @@ SENTIMENT_MAPPING = {
 }
 
 SENTIMENT_MAPPING_3_LABEL_VERSION = {
-    0: "Negative",
-    1: "Neutral",
-    2: "Positive",
+    1: "Negative",
+    2: "Neutral",
+    3: "Positive",
 }
 
 LABEL_MAPPING = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4}
@@ -57,3 +57,10 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # Model
 MODEL_TRAINING_OUTPUT_DIR = "output/model_output/training"
 MODEL_EVALUATION_OUTPUT_DIR = "output/model_output/evaluation"
+
+# --------------------------------------------------------------------------
+# inference config
+PRETRAINED_MODEL_5_CLASS_PATH = "output/model_output/training/run_09-03-2025-08-59-06/best_model.pth"
+PRETRAINED_MODEL_3_CLASS_PATH = "output/model_output/training/run_09-03-2025-20-24-25/best_model.pth"
+
+PRETRAINED_MODEL_INVALID_PATH = "output/model_output/training/run_invalid_run/best_model.pth"

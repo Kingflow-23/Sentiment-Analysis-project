@@ -94,7 +94,7 @@ def load_data(file_path: str, merge_labels: bool = False):
 
         if merge_labels:
             df["label"] = df["score"].map(
-                lambda x: SENTIMENT_MAPPING_3_LABEL_VERSION[x]
+                lambda x: SENTIMENT_MAPPING_3_LABEL_VERSION[x + 1]
             )
         else:
             df["label"] = df["score"].map(lambda x: SENTIMENT_MAPPING[x + 1])
