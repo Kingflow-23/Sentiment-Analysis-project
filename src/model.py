@@ -3,12 +3,18 @@ import torch.nn as nn
 
 from transformers import BertModel
 
+
 class SentimentClassifier(nn.Module):
     """
     Sentiment Classification Model using BERT as a feature extractor.
     """
 
-    def __init__(self, n_classes: int, model_name: str = "bert-base-uncased", dropout_prob: float = 0.3):
+    def __init__(
+        self,
+        n_classes: int,
+        model_name: str = "bert-base-uncased",
+        dropout_prob: float = 0.3,
+    ):
         """
         Initializes the Sentiment Classifier.
 
@@ -22,7 +28,9 @@ class SentimentClassifier(nn.Module):
         self.dropout = nn.Dropout(p=dropout_prob)
         self.fc = nn.Linear(self.bert.config.hidden_size, n_classes)
 
-    def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self, input_ids: torch.Tensor, attention_mask: torch.Tensor
+    ) -> torch.Tensor:
         """
         Forward pass through the model.
 

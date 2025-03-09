@@ -1,10 +1,10 @@
 import json
 import pandas as pd
 
-from config import SENTIMENT_MAPPING, LABEL_MAPPING
+from config import SENTIMENT_MAPPING, SENTIMENT_MAPPING_3_LABEL_VERSION, LABEL_MAPPING
 
 
-def load_file_by_type(file_path):
+def load_file_by_type(file_path: str):
     """
     Loads a file based on its type (CSV, JSON, XLSX).
 
@@ -35,12 +35,33 @@ def load_file_by_type(file_path):
         raise FileNotFoundError(f"Error: File {file_path} not found.")
 
 
-def load_data(file_path):
+def merge_score_labels(score: int) -> int:
+    """
+    Merges sentiment score labels into broader categories.
+    This function merges low scores (e.g., 0, 1) as 'negative',
+    mid scores (e.g., 2, 3) as 'neutral', and high scores (e.g., 4) as 'positive'.
+
+    Args:
+        score (int): The original score value.
+
+    Returns:
+        int: The merged score category.
+    """
+    if score <= 1:
+        return 0  # Negative
+    elif score == 2:
+        return 1  # Neutral
+    else:
+        return 2  # Positive
+
+
+def load_data(file_path: str, merge_labels: bool = False):
     """
     Loads sentiment analysis dataset from a file and processes it.
 
     Args:
         file_path (str): Path to the dataset file.
+        merge_labels (bool): Whether to merge labels. Defaults to False.
 
     Returns:
         pd.DataFrame: Processed data with 'text' and 'label'.
@@ -67,7 +88,16 @@ def load_data(file_path):
 
         df["score"] = df["score"].map(LABEL_MAPPING)
 
-        df["label"] = df["score"].map(lambda x: SENTIMENT_MAPPING[x + 1])
+        # If merge_labels is True, merge the labels into broader categories
+        if merge_labels:
+            df["score"] = df["score"].apply(merge_score_labels)
+
+        if merge_labels:
+            df["label"] = df["score"].map(
+                lambda x: SENTIMENT_MAPPING_3_LABEL_VERSION[x]
+            )
+        else:
+            df["label"] = df["score"].map(lambda x: SENTIMENT_MAPPING[x + 1])
 
         return df
 
