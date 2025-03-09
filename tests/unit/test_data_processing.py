@@ -143,7 +143,7 @@ def test_sentiment_mapping(sample_data_fake: pd.DataFrame):
 
     # Check that labels are mapped correctly using SENTIMENT_MAPPING
     for score in train_df["score"]:
-        assert SENTIMENT_MAPPING[score+1] in [
+        assert SENTIMENT_MAPPING[score + 1] in [
             "Really Negative",
             "Negative",
             "Neutral",
@@ -152,7 +152,7 @@ def test_sentiment_mapping(sample_data_fake: pd.DataFrame):
         ]
 
     for score in val_df["score"]:
-        assert SENTIMENT_MAPPING[score+1] in [
+        assert SENTIMENT_MAPPING[score + 1] in [
             "Really Negative",
             "Negative",
             "Neutral",
