@@ -46,7 +46,7 @@ TOKENIZER_NAME = "bert-base-uncased"
 MODEL_NAME = "bert-base-uncased"
 
 EPOCHS = 10
-N_CLASSES = 3  # 5
+N_CLASSES = 5  # 5
 DROPOUT = 0.3
 MAX_LEN = 128
 TEST_SIZE = 0.1
@@ -61,18 +61,44 @@ MODEL_EVALUATION_OUTPUT_DIR = "output/model_output/evaluation"
 
 # --------------------------------------------------------------------------
 # inference config
-PRETRAINED_MODEL_5_CLASS_PATH = "output/model_output/training/run_09-03-2025-08-59-06/best_model.pth"
-PRETRAINED_MODEL_3_CLASS_PATH = "output/model_output/training/run_09-03-2025-20-24-25/best_model.pth"
+PRETRAINED_MODEL_5_CLASS_PATH = (
+    "output/model_output/training/run_09-03-2025-08-59-06/best_model.pth"
+)
+PRETRAINED_MODEL_3_CLASS_PATH = (
+    "output/model_output/training/run_09-03-2025-20-24-25/best_model.pth"
+)
 
-PRETRAINED_MODEL_INVALID_PATH = "output/model_output/training/run_invalid_run/best_model.pth"
+PRETRAINED_MODEL_INVALID_PATH = (
+    "output/model_output/training/run_invalid_run/best_model.pth"
+)
 
 # --------------------------------------------------------------------------
 # Jupyter contants
 JUPYTER_MAX_LEN = 160
 RANDOM_SEED = 42
 
-JUPYTER_MODEL_NAME = 'bert-base-cased'
+JUPYTER_MODEL_NAME = "bert-base-cased"
 CLASS_NAME = ["Negative", "Neutral", "Positive"]
-HAPPY_COLORS_PALETTE = ["#01BEFE", "#FFDD00", "#FF7D00", "#FF006D", "#ADFF02", "#8F00FF"]
+HAPPY_COLORS_PALETTE = [
+    "#01BEFE",
+    "#FFDD00",
+    "#FF7D00",
+    "#FF006D",
+    "#ADFF02",
+    "#8F00FF",
+]
 
 DATA_ANALYSIS_PATH = "output/data_analysis"
+
+# --------------------------------------------------------------------------
+# App config
+APP_NAME = "Sentiment Analysis Web App"
+
+# Color Mapping for Sentiment Display
+COLOR_MAPPING = {
+    "Really Negative": "red",
+    "Negative": "red",
+    "Neutral": "blue",
+    "Positive": "green",
+    "Really Positive": "green",
+}

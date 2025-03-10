@@ -14,16 +14,18 @@ def predict_sentiment(
     tokenizer: AutoTokenizer = None,
     device: Union[str, torch.device] = "cpu",  # Default to cpu if not specified
     path_to_model: str = None,
+    n_classes: int = N_CLASSES,
 ) -> Union[int, list]:
     """
     Predicts the sentiment class for one or more text inputs.
 
     Args:
+        text (Union[str, list]): Input review text(s) to classify. Can be a single string or a list of strings.
         model (SentimentClassifier, optional): The trained BERT-based sentiment model.
         tokenizer (AutoTokenizer, optional): Hugging Face tokenizer for text processing.
-        text (Union[str, list]): Input review text(s) to classify. Can be a single string or a list of strings.
         device (Union[str, torch.device]): Device to run inference on ("cpu" or "cuda").
         path_to_model (str, optional): Path to the pre-trained model if model is not passed.
+        n_classes (int, optional): Number of sentiment classes. Defaults to N_CLASSES.
 
 
     Returns:
@@ -63,7 +65,7 @@ def predict_sentiment(
             raise ValueError(f"Model path {path_to_model} does not exist.")
 
         # Load the model from the provided path
-        model = SentimentClassifier(n_classes=N_CLASSES)
+        model = SentimentClassifier(n_classes=n_classes)
         model.load_state_dict(torch.load(path_to_model, map_location=device))
         model.to(device)
         model.eval()  # Ensure model is in evaluation mode
