@@ -1,6 +1,7 @@
 import torch
 
 from transformers import AutoTokenizer
+from sklearn.model_selection import train_test_split
 
 from config import *
 from src.train import train_model
@@ -20,10 +21,14 @@ def main():
         DATASET_PATH, merge_labels=True
     )  # merge_labels param = True to merge labels into broader ones
 
-    # Apply preprocessing (removes noise, tokenization, etc.)
-    train_data, val_data = preprocess_data(
-        raw_data, test_size=TEST_SIZE, max_length=MAX_LEN
+    # Split Test Data BEFORE Preprocessing (to avoid leakage)
+    train_val_data, test_data = train_test_split(
+        raw_data, test_size=TEST_SIZE, stratify=raw_data["score"], random_state=42
     )
+
+    # Apply preprocessing (removes noise, tokenization, etc.)
+    print("🔹 Preprocessing train and validation sets...\n")
+    train_data, val_data = preprocess_data(train_val_data, test_size=VAL_SIZE, max_length=MAX_LEN)
 
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
@@ -37,7 +42,7 @@ def main():
         val_data, tokenizer, max_len=MAX_LEN, batch_size=BATCH_SIZE
     )
     test_loader = create_data_loader(
-        raw_data, tokenizer, max_len=MAX_LEN, batch_size=BATCH_SIZE
+        test_data, tokenizer, max_len=MAX_LEN, batch_size=BATCH_SIZE
     )
 
     # ✅ Step 3: Initialize Model
