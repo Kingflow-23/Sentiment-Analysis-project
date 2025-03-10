@@ -27,5 +27,9 @@ __pycache__/
 Thumbs.db
 
 # Ignore Jupyter Notebook checkpoints
+etc
 test.ipynb
 .ipynb_checkpoints/
+
+# Model untracked.
+best_model_state.bin
