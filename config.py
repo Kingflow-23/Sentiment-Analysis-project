@@ -64,3 +64,14 @@ PRETRAINED_MODEL_5_CLASS_PATH = "output/model_output/training/run_09-03-2025-08-
 PRETRAINED_MODEL_3_CLASS_PATH = "output/model_output/training/run_09-03-2025-20-24-25/best_model.pth"
 
 PRETRAINED_MODEL_INVALID_PATH = "output/model_output/training/run_invalid_run/best_model.pth"
+
+# --------------------------------------------------------------------------
+# Jupyter contants
+JUPYTER_MAX_LEN = 160
+RANDOM_SEED = 42
+
+JUPYTER_MODEL_NAME = 'bert-base-cased'
+CLASS_NAME = ["Negative", "Neutral", "Positive"]
+HAPPY_COLORS_PALETTE = ["#01BEFE", "#FFDD00", "#FF7D00", "#FF006D", "#ADFF02", "#8F00FF"]
+
+DATA_ANALYSIS_PATH = "output/data_analysis"
