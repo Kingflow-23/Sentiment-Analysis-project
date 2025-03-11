@@ -121,3 +121,35 @@ def test_load_file_unsupported_format():
 
     with raises(ValueError, match=r"Unsupported file format: .*\.xml.*"):
         load_file_by_type(XML_FILE_PATH)
+
+
+def test_load_data_with_merge_labels():
+    """Test that the 'merge_labels' feature is working correctly."""
+    # Load the data with merge_labels set to True
+    df = load_data(DATASET_PATH, merge_labels=True)
+
+    # Check if the sentiment labels are within the range of 0, 1, 2 (Negative, Neutral, Positive)
+    assert all(
+        df["score"].isin([0, 1, 2])
+    ), "The 'score' column values are incorrect after merging labels."
+
+    # Check if 'label' column is using the 3-label version mapping
+    assert all(
+        df["label"].isin(SENTIMENT_MAPPING_3_LABEL_VERSION.values())
+    ), "The 'label' values are not correct after merging."
+
+
+def test_load_data_without_merge_labels():
+    """Test that loading data without merge_labels works with the 5-class mapping."""
+    # Load data without merge_labels
+    df = load_data(DATASET_PATH, merge_labels=False)
+
+    # Check if the 'score' column contains values within the 0-4 range after mapping (5-class range)
+    assert all(
+        df["score"].isin([0, 1, 2, 3, 4])
+    ), "The 'score' column values are incorrect without merging labels."
+
+    # Check if the 'label' column is using the 5-class sentiment mapping
+    assert all(
+        df["label"].isin(SENTIMENT_MAPPING.values())
+    ), "The 'label' values are not correct without merging."

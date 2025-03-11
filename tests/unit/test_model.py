@@ -13,11 +13,7 @@ def sample_input():
     """Fixture to create a sample tokenized input for testing."""
     text = "This is a great app! I love using it every day."
     inputs = tokenizer(
-        text,
-        padding="max_length",
-        truncation=True,
-        max_length=128,
-        return_tensors="pt"
+        text, padding="max_length", truncation=True, max_length=128, return_tensors="pt"
     )
     return inputs
 
@@ -30,8 +26,12 @@ def model():
 
 def test_model_initialization(model):
     """Test if the model initializes correctly."""
-    assert isinstance(model, SentimentClassifier), "Model is not an instance of SentimentClassifier."
-    assert model.fc.out_features == N_CLASSES, "Output layer size does not match number of classes."
+    assert isinstance(
+        model, SentimentClassifier
+    ), "Model is not an instance of SentimentClassifier."
+    assert (
+        model.fc.out_features == N_CLASSES
+    ), "Output layer size does not match number of classes."
 
 
 def test_model_forward_pass(model, sample_input):
@@ -43,7 +43,10 @@ def test_model_forward_pass(model, sample_input):
         output = model(input_ids, attention_mask)
 
     assert isinstance(output, torch.Tensor), "Model output is not a tensor."
-    assert output.shape == (1, N_CLASSES), f"Expected output shape (1, {N_CLASSES}), but got {output.shape}."
+    assert output.shape == (
+        1,
+        N_CLASSES,
+    ), f"Expected output shape (1, {N_CLASSES}), but got {output.shape}."
 
 
 def test_model_requires_grad(model):
