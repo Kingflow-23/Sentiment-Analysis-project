@@ -46,7 +46,7 @@ TOKENIZER_NAME = "bert-base-uncased"
 MODEL_NAME = "bert-base-uncased"
 
 EPOCHS = 10
-N_CLASSES = 5  # 5
+N_CLASSES = 3  # 5
 DROPOUT = 0.3
 MAX_LEN = 128
 TEST_SIZE = 0.1
@@ -62,10 +62,10 @@ MODEL_EVALUATION_OUTPUT_DIR = "output/model_output/evaluation"
 # --------------------------------------------------------------------------
 # inference config
 PRETRAINED_MODEL_5_CLASS_PATH = (
-    "output/model_output/training/run_09-03-2025-08-59-06/best_model.pth"
+    "output/model_output/training/run_10-03-2025-18-46-59/best_model.pth"
 )
 PRETRAINED_MODEL_3_CLASS_PATH = (
-    "output/model_output/training/run_09-03-2025-20-24-25/best_model.pth"
+    "output/model_output/training/run_11-03-2025-03-30-19/best_model.pth"
 )
 
 PRETRAINED_MODEL_INVALID_PATH = (
