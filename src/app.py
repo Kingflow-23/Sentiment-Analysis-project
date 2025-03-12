@@ -44,7 +44,7 @@ def main():
             try:
                 # Load model and tokenizer
                 device = torch.device(DEVICE)
-                prediction = predict_sentiment(
+                prediction, confidence = predict_sentiment(
                     text=user_input,
                     path_to_model=model_path,
                     device=device,
@@ -64,7 +64,7 @@ def main():
 
                 # Display result with color formatting
                 st.markdown(
-                    f"<h3 style='text-align: center; color: {color};'>Predicted Sentiment: {sentiment}</h3>",
+                    f"<h3 style='text-align: center; color: {color};'>Predicted Sentiment: {sentiment} at {confidence:.2f}% confidence</h3>",
                     unsafe_allow_html=True,
                 )
 

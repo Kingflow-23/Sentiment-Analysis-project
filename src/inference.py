@@ -15,7 +15,7 @@ def predict_sentiment(
     device: Union[str, torch.device] = "cpu",  # Default to cpu if not specified
     path_to_model: str = None,
     n_classes: int = N_CLASSES,
-) -> Union[int, list]:
+) -> Union[tuple[int, float], tuple[list, list]]:
     """
     Predicts the sentiment class for one or more text inputs.
 
@@ -30,6 +30,13 @@ def predict_sentiment(
 
     Returns:
         Union[int, list]: Predicted sentiment label:
+            - If a single text is provided:
+                - (int) Predicted sentiment label.
+                - (float) Confidence score (percentage).
+
+            - If a list of texts is provided:
+                - (list[int]) List of predicted sentiment labels.
+                - (list[float]) List of confidence scores (percentages).
 
         Classification Labels:
             - If `N_CLASSES = 5`:
@@ -86,7 +93,16 @@ def predict_sentiment(
         probabilities = torch.nn.functional.softmax(
             logits, dim=1
         )  # Get confidence scores
-        predictions = probabilities.argmax(dim=1).cpu().numpy() + 1  # Map to 1-5 scale
+        confidence_scores, predicted_classes = probabilities.max(
+            dim=1
+        )  # Get max probability and corresponding class
+        confidence_scores = (
+            confidence_scores.cpu().numpy() * 100
+        )  # Convert to percentage
+        predictions = predicted_classes.cpu().numpy() + 1  # Map to 1-5 scale
 
     # Return a single prediction if one input text was provided, or a list if multiple texts were provided
-    return predictions[0] if len(text) == 1 else predictions.tolist()
+    if len(text) == 1:
+        return predictions[0], confidence_scores[0]
+    else:
+        return predictions.tolist(), confidence_scores.tolist()
