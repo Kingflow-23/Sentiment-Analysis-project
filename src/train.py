@@ -122,7 +122,7 @@ def train_model(
         val_loss, val_acc, _, _, _ = evaluate(model, val_loader, loss_fn, device)
 
         print(f"Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}")
-        print(f"Val   Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}\n")
+        print(f"Val   Loss: {val_loss:.4f}, Val   Accuracy: {val_acc:.4f}\n")
 
         # ✅ Save metrics for plotting
         history["train_loss"].append(train_loss)

@@ -46,27 +46,60 @@ def mock_torch_load(monkeypatch):
 
 
 @pytest.fixture(scope="module")
-def setup_model():
+def setup_model_3_classes():
     """
-    Fixture to load the model and tokenizer once for all tests.
+    Fixture for a 3 class model to load the model and tokenizer once for all tests.
 
     Returns:
         tuple: (model, tokenizer) where model is an instance of SentimentClassifier
                loaded with a state dict from a predefined model path, and tokenizer is
                an AutoTokenizer instance from the specified TOKENIZER_NAME.
     """
-    model_path = (
-        PRETRAINED_MODEL_5_CLASS_PATH
-        if N_CLASSES == 5
-        else PRETRAINED_MODEL_3_CLASS_PATH
-    )
+    model_path = PRETRAINED_MODEL_3_CLASS_PATH
 
-    model = SentimentClassifier(n_classes=N_CLASSES)
+    model = SentimentClassifier(n_classes=3)
     model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
     model.eval()
 
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
+    return model, tokenizer
+
+
+@pytest.fixture(scope="module")
+def setup_model_5_classes():
+    """
+    Fixture for a 5 class model to load the model and tokenizer once for all tests.
+
+    Returns:
+        tuple: (model, tokenizer) where model is an instance of SentimentClassifier
+               loaded with a state dict from a predefined model path, and tokenizer is
+               an AutoTokenizer instance from the specified TOKENIZER_NAME.
+    """
+    model_path = PRETRAINED_MODEL_5_CLASS_PATH
+
+    model = SentimentClassifier(n_classes=5)
+    model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
+    model.eval()
+
+    tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
+
+    return model, tokenizer
+
+
+# Use a unified fixture for general tests (defaults to 5-class based on config)
+@pytest.fixture(scope="module")
+def setup_model():
+    # For these tests, we use the default model from config (which is 5 classes)
+    model_path = (
+        PRETRAINED_MODEL_5_CLASS_PATH
+        if N_CLASSES == 5
+        else PRETRAINED_MODEL_3_CLASS_PATH
+    )
+    model = SentimentClassifier(n_classes=N_CLASSES)
+    model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
+    model.eval()
+    tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
     return model, tokenizer
 
 
@@ -313,24 +346,35 @@ def test_invalid_input(setup_model):
         predict_sentiment(None, model=model, tokenizer=tokenizer)
 
 
+# New fixture to allow indirect parameterization by fixture name
+@pytest.fixture
+def setup_model_name(request):
+    fixture_name = request.param
+    return request.getfixturevalue(fixture_name)
+
+
 @pytest.mark.parametrize(
-    "num_classes, expected_range",
+    "setup_model_name, expected_range",
     [
-        (5, {1, 2, 3, 4, 5}),  # 5-class sentiment
-        (3, {1, 2, 3}),  # 3-class sentiment
+        ("setup_model_5_classes", {1, 2, 3, 4, 5}),  # 5-class model
+        ("setup_model_3_classes", {1, 2, 3}),  # 3-class model
     ],
+    indirect=["setup_model_name"],
 )
-def test_prediction_range(setup_model, num_classes, expected_range):
+def test_prediction_range(setup_model_name, expected_range):
     """
     Test that the predicted sentiment falls within the correct label range.
-
     Checks that for the given number of sentiment classes, the output of predict_sentiment
     is within the expected set of sentiment labels.
     """
-    model, tokenizer = setup_model
+    model, tokenizer = setup_model_name
     text = "I really enjoyed this movie!"
 
     prediction = predict_sentiment(text, model=model, tokenizer=tokenizer)
+
+    # Convert numpy integer to Python int if necessary
+    if isinstance(prediction, np.integer):
+        prediction = int(prediction)
 
     assert (
         prediction in expected_range
