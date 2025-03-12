@@ -87,10 +87,8 @@ def setup_model_5_classes():
     return model, tokenizer
 
 
-# Use a unified fixture for general tests (defaults to 5-class based on config)
 @pytest.fixture(scope="module")
 def setup_model():
-    # For these tests, we use the default model from config (which is 5 classes)
     model_path = (
         PRETRAINED_MODEL_5_CLASS_PATH
         if N_CLASSES == 5
@@ -104,36 +102,48 @@ def setup_model():
 
 
 @pytest.mark.parametrize(
-    "text, expected_type",
+    "text, expected_prediction_type, expected_confidence_type",
     [
-        ("This product is amazing!", int),  # Single string input
+        ("This product is amazing!", int, float),  # Single string input
         (
             ["Worst experience ever!", "It was okay.", "Absolutely loved it!"],
+            list,
             list,
         ),  # List input
     ],
 )
-def test_predict_sentiment(setup_model, text, expected_type):
+def test_predict_sentiment(
+    setup_model, text, expected_prediction_type, expected_confidence_type
+):
     """
-    Test that `predict_sentiment` returns the correct data type based on input.
+    Test that `predict_sentiment` returns the correct data types based on input.
 
-    Verifies that a single text input returns an integer and a list input returns
-    a list of integers.
+    Verifies that a single text input returns a tuple (int, float) and a list input returns
+    a tuple (list, list) where the first element is the prediction and the second is the confidence.
     """
     model, tokenizer = setup_model
-    prediction = predict_sentiment(text, model=model, tokenizer=tokenizer)
+    prediction, confidence = predict_sentiment(text, model=model, tokenizer=tokenizer)
 
     if isinstance(prediction, np.integer):
         prediction = int(prediction)
-
     assert isinstance(
-        prediction, expected_type
-    ), f"Expected {expected_type}, got {type(prediction)}"
+        prediction, expected_prediction_type
+    ), f"Expected {expected_prediction_type}, got {type(prediction)}"
+
+    if isinstance(confidence, np.floating):
+        confidence = float(confidence)
+    assert isinstance(
+        confidence, expected_confidence_type
+    ), f"Expected {expected_confidence_type}, got {type(confidence)}"
 
     if isinstance(prediction, list):
         assert all(
             isinstance(p, int) for p in prediction
         ), "List elements must be integers"
+    if isinstance(confidence, list):
+        assert all(
+            isinstance(c, float) for c in confidence
+        ), "List elements must be floats"
 
 
 def test_missing_model_and_path():
@@ -292,7 +302,7 @@ def test_predict_sentiment_model_loading(monkeypatch):
     )
 
     # Call predict_sentiment with model=None so that the model is loaded from file.
-    prediction = predict_sentiment(
+    prediction, confidence = predict_sentiment(
         text="Test review",
         model=None,
         tokenizer=None,  # Will trigger the dummy tokenizer
@@ -317,14 +327,13 @@ def test_missing_tokenizer(setup_model):
     """
     model, _ = setup_model
 
-    prediction = predict_sentiment(
+    prediction, conficence = predict_sentiment(
         text="This is a test text", model=model, tokenizer=None
     )
 
     if isinstance(prediction, np.integer):
         prediction = int(prediction)
 
-    # Verify that the tokenizer is initialized by checking its type
     assert isinstance(prediction, int), "The prediction should be of type int."
 
 
@@ -370,9 +379,8 @@ def test_prediction_range(setup_model_name, expected_range):
     model, tokenizer = setup_model_name
     text = "I really enjoyed this movie!"
 
-    prediction = predict_sentiment(text, model=model, tokenizer=tokenizer)
+    prediction, confidence = predict_sentiment(text, model=model, tokenizer=tokenizer)
 
-    # Convert numpy integer to Python int if necessary
     if isinstance(prediction, np.integer):
         prediction = int(prediction)
 
