@@ -367,11 +367,11 @@ Specified argument is here to hide warning at beginning.
 
 - **3-Sentiment Classification Demo**:
 
-![3 classes demo ‐ Réalisée avec Clipchamp](https://github.com/user-attachments/assets/50b1900a-03fa-4dcd-9655-545ed58ecb3b)
+https://github.com/user-attachments/assets/c42e19ac-cfaa-4ddf-9a1a-0e702089b53a
 
 - **5-Sentiment Classification Demo**:
 
-![5 class demo ‐ Réalisée avec Clipchamp](https://github.com/user-attachments/assets/338570a7-fff9-4289-93fa-45e522bc8d30)
+https://github.com/user-attachments/assets/3ca810fe-6d61-4807-9cf4-22a7ee6fc134
 
 --- 
 
@@ -379,6 +379,30 @@ Specified argument is here to hide warning at beginning.
 
 - ### 5-Class vs. 3-Class Models:
 
+  - #### 5-Class Results
+    
+    - **Training**
+ 
+      ![accuracy_and_loss_plot](https://github.com/user-attachments/assets/1b48f18c-520c-4b2a-ad92-1150fc87ae36)
+
+    - **Evaluation**
+
+      ![confusion_matrix](https://github.com/user-attachments/assets/536c4bdf-9a0e-4482-afa8-bf29c27794e3)
+      ![classification_report](https://github.com/user-attachments/assets/37dda05c-85d1-423f-a88d-6c51fbcc23c3)
+      ![confidence_histogram](https://github.com/user-attachments/assets/2c35c54f-c739-43cd-a5e7-f9b8016aec55)
+
+  - #### 3-Class Results
+
+    - **Training**
+ 
+      ![accuracy_and_loss_plot](https://github.com/user-attachments/assets/53824a92-64e4-4fce-b0a6-b838ce760a34)
+      
+    - **Evaluation**
+   
+      ![confusion_matrix](https://github.com/user-attachments/assets/5a084b89-89ac-472f-919b-1cf2f0dbb646)
+      ![classification_report](https://github.com/user-attachments/assets/fd0fd91b-dd1e-4bab-bbc2-27bb150d307c)
+      ![confidence_histogram](https://github.com/user-attachments/assets/fcc4c37a-4c26-4407-bcd6-0f400cbce76f)
+    
 Experiments showed that a 3-class model tends to achieve higher overall accuracy (around 77% validation) compared to a 5-class model (around 53% validation). However, the 5-class model offers finer granularity for identifying critical feedback (e.g., distinguishing between "Really Negative" and "Negative").
 
 - ### Evaluation Metrics:
