@@ -369,7 +369,7 @@ Specified argument is here to hide warning at beginning.
 
 ![3 classes demo ‐ Réalisée avec Clipchamp](https://github.com/user-attachments/assets/50b1900a-03fa-4dcd-9655-545ed58ecb3b)
 
-- ** 5-Sentiment Classification Demo**:
+- **5-Sentiment Classification Demo**:
 
 ![5 class demo ‐ Réalisée avec Clipchamp](https://github.com/user-attachments/assets/338570a7-fff9-4289-93fa-45e522bc8d30)
 
