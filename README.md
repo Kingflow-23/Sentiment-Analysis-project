@@ -367,11 +367,13 @@ Specified argument is here to hide warning at beginning.
 
 - **3-Sentiment Classification Demo**:
 
-https://github.com/user-attachments/assets/c42e19ac-cfaa-4ddf-9a1a-0e702089b53a
+https://github.com/user-attachments/assets/e283cf05-d137-4d9a-a9bd-d177e33f5b55
 
 - **5-Sentiment Classification Demo**:
 
-https://github.com/user-attachments/assets/3ca810fe-6d61-4807-9cf4-22a7ee6fc134
+https://github.com/user-attachments/assets/ec03dc7a-9c03-4644-8ccd-a9715ce48f05
+
+The confidence scores that we see next to the prediction are quite high as we can see in the result and evaluation in following part. We have to take it into account for further refinement regarding this project.
 
 --- 
 
