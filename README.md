@@ -9,7 +9,6 @@ This project implements an end-to-end sentiment analysis pipeline using BERT. Ou
 - [Introduction](#introduction)
 - [Project Overview](#project-overview)
   - [Approach](#approach)
-  - [Division of Work](#division-of-work)
   - [Challenges & Solutions](#challenges--solutions)
 - [Repository Structure](#repository-structure)
 - [Installation & Setup](#installation--setup)
@@ -41,18 +40,6 @@ Sentiment analysis is a Natural Language Processing (NLP) task that determines w
   
 - **Rationale:** A five-class model provides granular insights. For example, social media managers can prioritize "Really Negative" feedback separately from mildly negative comments, leading to more effective responses.
 
-### Division of Work
-
-| Task                           | Assigned Member |
-|--------------------------------|---------|
-| Data Extraction                | Ephraïm |
-| Data Processing                | Both |
-| Model Training                 | Florian |
-| Inference Script               | Florian |
-| Unit Testing & CI              | Both |
-
-We followed best practices in Git with **branching, pull requests, and code reviews** to ensure smooth collaboration.
-
 ### Challenges & Solutions 
 
 - **Test Coverage:** Achieved high test coverage using pytest with detailed unit tests and coverage reports.
@@ -69,7 +56,7 @@ We followed best practices in Git with **branching, pull requests, and code revi
 Sentiment-Analysis-project/
 ├── dataset/                    
 │   ├── real_datasets/                          # Real-world dataset files
-│   |   └── dataset.csv                         # Sample dataset file
+│   │   └── dataset.csv                         # Sample dataset file
 │   └── test_datasets/                          # Automatically generated test files
 │       └── generate_test_files.py              # Script to generate test files
 ├── output/
@@ -99,8 +86,7 @@ Sentiment-Analysis-project/
 ├── config.py                                   # Configuration settings (paths, model parameters, etc.)
 ├── dataset_config.py                           # Ai-Generated Fake Dataset of review|score
 ├── README.md                                   # Project documentation (this file)
-├── requirements.txt                            # Dependencies required to run the project
-└── Sentiment_Analysis_with_Kaggle.ipynb        # Kaggle Jupyter notebook from which we took inspiration
+└── requirements.txt                            # Dependencies required to run the project
 ```
 
 ---
@@ -425,6 +411,8 @@ These outputs help in understanding the model's performance and guide further im
 
 We can think about using larger datasets and augmentation techniques to improve generalization. Implementing techniques like back-translation, paraphrasing, or word substitution. 
 
+We can also think about handling more languages even if we know that it will be hard to implement due primarily to the lack of data.
+
 - **Hyperparameter Tuning**:
 
 Fine-tune learning rate, dropout, and weight decay parameters.
@@ -453,5 +441,5 @@ Improve the Streamlit app with additional interactive features and visualization
 ---
 
 ## **Team Members**
-- **[Florian HOUNKPATIN](https://www.linkedin.com/in/florian-hounkpatin/)**
-- **[Ephraim KOSSONOU](https://www.linkedin.com/in/ephraïm-kossonou/)**
+- **[Florian HOUNKPATIN](https://www.linkedin.com/in/florian-hounkpatin/)** : Data Scientist 
+- **[Ephraim KOSSONOU](https://www.linkedin.com/in/ephraïm-kossonou/)** : Data Analyst | Engineer
