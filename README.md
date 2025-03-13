@@ -391,7 +391,24 @@ The confidence scores that we see next to the prediction are quite high as we ca
       ![classification_report](https://github.com/user-attachments/assets/fd0fd91b-dd1e-4bab-bbc2-27bb150d307c)
       ![confidence_histogram](https://github.com/user-attachments/assets/fcc4c37a-4c26-4407-bcd6-0f400cbce76f)
     
-Experiments showed that a 3-class model tends to achieve higher overall accuracy (around 77% validation) compared to a 5-class model (around 53% validation). However, the 5-class model offers finer granularity for identifying critical feedback (e.g., distinguishing between "Really Negative" and "Negative").
+Experiments show that a 3-class sentiment model performs better overall, achieving about **77% validation accuracy**, compared to a 5-class model, which reaches only **53% validation accuracy**. However, the 5-class model provides more detailed sentiment analysis, allowing us to distinguish between subtle differences, such as "Really Negative" vs. "Negative."
+
+One key challenge is that the model struggles to predict neutral sentiment. This could be due to:
+
+- **The subjective nature of neutrality** – Reviews might lean slightly positive or negative, making it hard to classify them as truly neutral.
+- **Imbalanced data distribution** – If there are fewer neutral reviews in the dataset, the model has less exposure to this class, leading to poor predictions.
+
+The distribution plots further highlight these issues. The first plot shows the merged sentiment distribution for the 3-class model, while the second plot presents the original 5-class sentiment distribution. These distributions suggest that some sentiment categories (basically the neutral one) are **underrepresented**, which could impact model performance.
+
+![merged_distribution_of_review_sentiment](https://github.com/user-attachments/assets/5812a3ad-255b-45c5-a21e-807a486992a3)
+
+![original_distribution_of_review_sentiment](https://github.com/user-attachments/assets/2c2ab198-e2bf-4f7d-9bc3-f5179a22c629)
+
+Additionally, **review length may introduce bias** in sentiment prediction. The KDE (Kernel Density Estimation) plot indicates that review length varies across sentiment classes, suggesting that **longer or shorter reviews might be more strongly associated with certain sentiments**. This bias could influence how the model assigns sentiment labels.
+
+![review_length_distribution_with_kde](https://github.com/user-attachments/assets/89fd22c9-8608-4de9-907a-9736f92400ad)
+
+Finally, the performance gap between the 3-class and 5-class models can be explained by the fact that **fewer classes make predictions easier**. With only three options, the model has a higher chance of guessing correctly, even with minimal understanding. In contrast, a 5-class model requires more nuanced differentiation, making accurate predictions more challenging.
 
 - ### Evaluation Metrics:
 The evaluation pipeline produces:
