@@ -248,31 +248,7 @@ The configuration file serves as the central location for all settings that cont
 
     These paths point to the saved models for inference. Make sure these paths are updated to reflect the actual model locations on your system, especially if you have retrained or relocated models.
 
-5. **Jupyter Notebook & Visualization Constants**
-
-    **Jupyter Specific Settings:**
-
-    ```python
-    JUPYTER_MAX_LEN = 160
-    RANDOM_SEED = 42
-    JUPYTER_MODEL_NAME = "bert-base-cased"
-    CLASS_NAME = ["Negative", "Neutral", "Positive"]
-    HAPPY_COLORS_PALETTE = ["#01BEFE", "#FFDD00", "#FF7D00", "#FF006D", "#ADFF02", "#8F00FF"]
-    DATA_ANALYSIS_PATH = "output/data_analysis"
-    ```
-
-    These settings are used within Jupyter notebooks for testing, reproducibility (via RANDOM_SEED), and visualizations.
-
-    - **JUPYTER_MAX_LEN**: Maximum input sequence length in the Jupyter notebooks.
-    - **RANDOM_SEED**: Ensures reproducibility of results when set to the same value for - different experiments.
-    - **JUPYTER_MODEL_NAME**: Specifies the model name for Jupyter-specific tasks.
-    - **CLASS_NAME**: List of sentiment classes (modify according to your model configuration).
-    - **HAPPY_COLORS_PALETTE**: A list of color codes for visualizing sentiment in Jupyter notebooks.
-    - **DATA_ANALYSIS_PATH**: Path where data analysis results will be saved.
-
-    Adjust the random seed if needed for different experiment replicability and ensure that paths like DATA_ANALYSIS_PATH are correctly set.
-
-6. App Configuration
+5. App Configuration
 
     **Web Application Settings:**
 
@@ -409,14 +385,6 @@ Additionally, **review length may introduce bias** in sentiment prediction. The 
 ![review_length_distribution_with_kde](https://github.com/user-attachments/assets/89fd22c9-8608-4de9-907a-9736f92400ad)
 
 Finally, the performance gap between the 3-class and 5-class models can be explained by the fact that **fewer classes make predictions easier**. With only three options, the model has a higher chance of guessing correctly, even with minimal understanding. In contrast, a 5-class model requires more nuanced differentiation, making accurate predictions more challenging.
-
-- ### Evaluation Metrics:
-The evaluation pipeline produces:
-
-- Loss and accuracy plots
-- A confusion matrix
-- A classification report (precision, recall, F1-score)
-- A prediction confidence histogram
 
 These outputs help in understanding the model's performance and guide further improvements.
 
