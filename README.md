@@ -114,6 +114,7 @@ Sentiment-Analysis-project/
     Our Python version used for this project is **3.10.11**
 
     ```bash
+    python -m pip install --upgrade pip
     pip install -r requirements.txt
     ```
 
