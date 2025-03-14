@@ -1,0 +1,6 @@
+*.pth filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -text
+output/model_output/training/*/run_folder*/*.pth filter=lfs diff=lfs merge=lfs -text
+output/model_output/training/run_folder*/*.pth filter=lfs diff=lfs merge=lfs -text
+output/model_output/training/run_*/best_model.pth filter=lfs diff=lfs merge=lfs -text
