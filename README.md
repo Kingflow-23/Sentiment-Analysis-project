@@ -119,7 +119,7 @@ Sentiment-Analysis-project/
     ```
 
 4. **Generate Test Data (if necessary):**
-    - The project includes scripts to automatically generate test datasets in dataset/test_datasets. To generate test data, run the following command:
+    - The project includes scripts to automatically generate test datasets in dataset/test_datasets. To generate test data, Uncomment last line in the file and run the following command:
 
     ```bash
     python dataset/test_datasets/generate_test_data.py
