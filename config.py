@@ -73,24 +73,6 @@ PRETRAINED_MODEL_INVALID_PATH = (
 )
 
 # --------------------------------------------------------------------------
-# Jupyter contants
-JUPYTER_MAX_LEN = 160
-RANDOM_SEED = 42
-
-JUPYTER_MODEL_NAME = "bert-base-cased"
-CLASS_NAME = ["Negative", "Neutral", "Positive"]
-HAPPY_COLORS_PALETTE = [
-    "#01BEFE",
-    "#FFDD00",
-    "#FF7D00",
-    "#FF006D",
-    "#ADFF02",
-    "#8F00FF",
-]
-
-DATA_ANALYSIS_PATH = "output/data_analysis"
-
-# --------------------------------------------------------------------------
 # App config
 APP_NAME = "Sentiment Analysis Web App"
 

@@ -9,7 +9,6 @@ This project implements an end-to-end sentiment analysis pipeline using BERT. Ou
 - [Introduction](#introduction)
 - [Project Overview](#project-overview)
   - [Approach](#approach)
-  - [Division of Work](#division-of-work)
   - [Challenges & Solutions](#challenges--solutions)
 - [Repository Structure](#repository-structure)
 - [Installation & Setup](#installation--setup)
@@ -41,18 +40,6 @@ Sentiment analysis is a Natural Language Processing (NLP) task that determines w
   
 - **Rationale:** A five-class model provides granular insights. For example, social media managers can prioritize "Really Negative" feedback separately from mildly negative comments, leading to more effective responses.
 
-### Division of Work
-
-| Task                           | Assigned Member |
-|--------------------------------|---------|
-| Data Extraction                | Ephraïm |
-| Data Processing                | Both |
-| Model Training                 | Florian |
-| Inference Script               | Florian |
-| Unit Testing & CI              | Both |
-
-We followed best practices in Git with **branching, pull requests, and code reviews** to ensure smooth collaboration.
-
 ### Challenges & Solutions 
 
 - **Test Coverage:** Achieved high test coverage using pytest with detailed unit tests and coverage reports.
@@ -69,7 +56,7 @@ We followed best practices in Git with **branching, pull requests, and code revi
 Sentiment-Analysis-project/
 ├── dataset/                    
 │   ├── real_datasets/                          # Real-world dataset files
-│   |   └── dataset.csv                         # Sample dataset file
+│   │   └── dataset.csv                         # Sample dataset file
 │   └── test_datasets/                          # Automatically generated test files
 │       └── generate_test_files.py              # Script to generate test files
 ├── output/
@@ -99,8 +86,7 @@ Sentiment-Analysis-project/
 ├── config.py                                   # Configuration settings (paths, model parameters, etc.)
 ├── dataset_config.py                           # Ai-Generated Fake Dataset of review|score
 ├── README.md                                   # Project documentation (this file)
-├── requirements.txt                            # Dependencies required to run the project
-└── Sentiment_Analysis_with_Kaggle.ipynb        # Kaggle Jupyter notebook from which we took inspiration
+└── requirements.txt                            # Dependencies required to run the project
 ```
 
 ---
@@ -128,6 +114,7 @@ Sentiment-Analysis-project/
     Our Python version used for this project is **3.10.11**
 
     ```bash
+    python -m pip install --upgrade pip
     pip install -r requirements.txt
     ```
 
@@ -262,31 +249,7 @@ The configuration file serves as the central location for all settings that cont
 
     These paths point to the saved models for inference. Make sure these paths are updated to reflect the actual model locations on your system, especially if you have retrained or relocated models.
 
-5. **Jupyter Notebook & Visualization Constants**
-
-    **Jupyter Specific Settings:**
-
-    ```python
-    JUPYTER_MAX_LEN = 160
-    RANDOM_SEED = 42
-    JUPYTER_MODEL_NAME = "bert-base-cased"
-    CLASS_NAME = ["Negative", "Neutral", "Positive"]
-    HAPPY_COLORS_PALETTE = ["#01BEFE", "#FFDD00", "#FF7D00", "#FF006D", "#ADFF02", "#8F00FF"]
-    DATA_ANALYSIS_PATH = "output/data_analysis"
-    ```
-
-    These settings are used within Jupyter notebooks for testing, reproducibility (via RANDOM_SEED), and visualizations.
-
-    - **JUPYTER_MAX_LEN**: Maximum input sequence length in the Jupyter notebooks.
-    - **RANDOM_SEED**: Ensures reproducibility of results when set to the same value for - different experiments.
-    - **JUPYTER_MODEL_NAME**: Specifies the model name for Jupyter-specific tasks.
-    - **CLASS_NAME**: List of sentiment classes (modify according to your model configuration).
-    - **HAPPY_COLORS_PALETTE**: A list of color codes for visualizing sentiment in Jupyter notebooks.
-    - **DATA_ANALYSIS_PATH**: Path where data analysis results will be saved.
-
-    Adjust the random seed if needed for different experiment replicability and ensure that paths like DATA_ANALYSIS_PATH are correctly set.
-
-6. App Configuration
+5. App Configuration
 
     **Web Application Settings:**
 
@@ -367,11 +330,13 @@ Specified argument is here to hide warning at beginning.
 
 - **3-Sentiment Classification Demo**:
 
-https://github.com/user-attachments/assets/c42e19ac-cfaa-4ddf-9a1a-0e702089b53a
+https://github.com/user-attachments/assets/e283cf05-d137-4d9a-a9bd-d177e33f5b55
 
 - **5-Sentiment Classification Demo**:
 
-https://github.com/user-attachments/assets/3ca810fe-6d61-4807-9cf4-22a7ee6fc134
+https://github.com/user-attachments/assets/ec03dc7a-9c03-4644-8ccd-a9715ce48f05
+
+The confidence scores that we see next to the prediction are quite high as we can see in the result and evaluation in following part. We have to take it into account for further refinement regarding this project.
 
 --- 
 
@@ -403,15 +368,24 @@ https://github.com/user-attachments/assets/3ca810fe-6d61-4807-9cf4-22a7ee6fc134
       ![classification_report](https://github.com/user-attachments/assets/fd0fd91b-dd1e-4bab-bbc2-27bb150d307c)
       ![confidence_histogram](https://github.com/user-attachments/assets/fcc4c37a-4c26-4407-bcd6-0f400cbce76f)
     
-Experiments showed that a 3-class model tends to achieve higher overall accuracy (around 77% validation) compared to a 5-class model (around 53% validation). However, the 5-class model offers finer granularity for identifying critical feedback (e.g., distinguishing between "Really Negative" and "Negative").
+Experiments show that a 3-class sentiment model performs better overall, achieving about **77% validation accuracy**, compared to a 5-class model, which reaches only **53% validation accuracy**. However, the 5-class model provides more detailed sentiment analysis, allowing us to distinguish between subtle differences, such as "Really Negative" vs. "Negative."
 
-- ### Evaluation Metrics:
-The evaluation pipeline produces:
+One key challenge is that the model struggles to predict neutral sentiment. This could be due to:
 
-- Loss and accuracy plots
-- A confusion matrix
-- A classification report (precision, recall, F1-score)
-- A prediction confidence histogram
+- **The subjective nature of neutrality** – Reviews might lean slightly positive or negative, making it hard to classify them as truly neutral.
+- **Imbalanced data distribution** – If there are fewer neutral reviews in the dataset, the model has less exposure to this class, leading to poor predictions.
+
+The distribution plots further highlight these issues. The first plot shows the merged sentiment distribution for the 3-class model, while the second plot presents the original 5-class sentiment distribution. These distributions suggest that some sentiment categories (basically the neutral one) are **underrepresented**, which could impact model performance.
+
+![merged_distribution_of_review_sentiment](https://github.com/user-attachments/assets/5812a3ad-255b-45c5-a21e-807a486992a3)
+
+![original_distribution_of_review_sentiment](https://github.com/user-attachments/assets/2c2ab198-e2bf-4f7d-9bc3-f5179a22c629)
+
+Additionally, **review length may introduce bias** in sentiment prediction. The KDE (Kernel Density Estimation) plot indicates that review length varies across sentiment classes, suggesting that **longer or shorter reviews might be more strongly associated with certain sentiments**. This bias could influence how the model assigns sentiment labels.
+
+![review_length_distribution_with_kde](https://github.com/user-attachments/assets/89fd22c9-8608-4de9-907a-9736f92400ad)
+
+Finally, the performance gap between the 3-class and 5-class models can be explained by the fact that **fewer classes make predictions easier**. With only three options, the model has a higher chance of guessing correctly, even with minimal understanding. In contrast, a 5-class model requires more nuanced differentiation, making accurate predictions more challenging.
 
 These outputs help in understanding the model's performance and guide further improvements.
 
@@ -422,6 +396,8 @@ These outputs help in understanding the model's performance and guide further im
 - **Data Augmentation**: 
 
 We can think about using larger datasets and augmentation techniques to improve generalization. Implementing techniques like back-translation, paraphrasing, or word substitution. 
+
+We can also think about handling more languages even if we know that it will be hard to implement due primarily to the lack of data.
 
 - **Hyperparameter Tuning**:
 
@@ -451,5 +427,5 @@ Improve the Streamlit app with additional interactive features and visualization
 ---
 
 ## **Team Members**
-- **[Florian HOUNKPATIN](https://www.linkedin.com/in/florian-hounkpatin/)**
-- **[Ephraim KOSSONOU](https://www.linkedin.com/in/ephraïm-kossonou/)**
+- **[Florian HOUNKPATIN](https://www.linkedin.com/in/florian-hounkpatin/)** : Data Scientist 
+- **[Ephraim KOSSONOU](https://www.linkedin.com/in/ephraïm-kossonou/)** : Data Analyst | Engineer

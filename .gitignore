@@ -33,6 +33,3 @@ test.ipynb
 
 # Model untracked.
 best_model_state.bin
-
-# Ignore all .pth files inside the model_output/training directory
-output/model_output/training/*/best_model.pth
