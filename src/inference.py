@@ -106,3 +106,31 @@ def predict_sentiment(
         return predictions[0], confidence_scores[0]
     else:
         return predictions.tolist(), confidence_scores.tolist()
+
+# if __name__ == "__main__":
+#     # Prompt the user for input.
+#     # To input multiple texts, separate them using the delimiter "||"
+#     user_input = input("Enter text for sentiment analysis (use '||' to separate multiple inputs): ").strip()
+#
+#     # Determine whether to treat the input as a single text or a list of texts.
+#     if "||" in user_input:
+#         # Split the input on the delimiter and strip extra spaces
+#         sample_text = [text.strip() for text in user_input.split("||") if text.strip()]
+#     else:
+#         sample_text = user_input  # single text
+#
+#     # Provide the path to your trained model
+#     model_path = (
+#        PRETRAINED_MODEL_3_CLASS_PATH
+#        if model_choice == "3-class model"
+#        else PRETRAINED_MODEL_5_CLASS_PATH
+#     )
+#
+#     # Call the predict_sentiment function with the provided text(s)
+#     prediction, confidence = predict_sentiment(text=sample_text, path_to_model=model_path, device=DEVICE)
+#
+#     # Print the output.
+#     # If a single text was provided, prediction and confidence will be a single value;
+#     # if multiple texts were provided, they will be lists.
+#     print("Predicted Sentiment:", prediction)
+#     print("Confidence Score:", confidence)
