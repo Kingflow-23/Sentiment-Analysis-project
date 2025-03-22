@@ -1,11 +1,13 @@
 import re
 import pandas as pd
 
+from config import *
+
 from transformers import AutoTokenizer
 from sklearn.model_selection import train_test_split
 
 # Load tokenizer for BERT
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
 
 def clean_text(text: str) -> str:
