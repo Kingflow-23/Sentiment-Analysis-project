@@ -4,11 +4,13 @@ import pandas as pd
 
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
+
+from config import *
 from dataset_config import FAKE_DATASET
 from src.dataloader import GPReviewDataset, create_data_loader
 
 # Load tokenizer (use the same one as in training)
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
 
 @pytest.fixture
