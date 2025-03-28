@@ -1,84 +1,76 @@
 import os
 import torch
-
-from typing import Union
+from typing import Union, List
 from transformers import AutoTokenizer
 
 from src.model import SentimentClassifier
 from config import *
 
 
+def load_model(path_to_model: str, n_classes: int, device: str) -> SentimentClassifier:
+    """
+    Loads the trained sentiment classifier model from disk.
+
+    Args:
+        path_to_model (str): File path to the pre-trained model.
+        n_classes (int): Number of sentiment classes.
+        device (str): Device to run inference on.
+    """
+    if not os.path.exists(path_to_model):
+        raise ValueError(f"Model path {path_to_model} does not exist.")
+    model = SentimentClassifier(n_classes=n_classes)
+    model.load_state_dict(torch.load(path_to_model, map_location=device))
+    model.to(device)
+    model.eval()
+    return model
+
+
 def predict_sentiment(
-    text: Union[str, list] = None,  # Can handle both single string and list of strings
+    text: Union[str, List[str]] = None,
     model: SentimentClassifier = None,
     tokenizer: AutoTokenizer = None,
-    device: Union[str, torch.device] = "cpu",  # Default to cpu if not specified
+    device: Union[str, torch.device] = "cpu",
     path_to_model: str = None,
     n_classes: int = N_CLASSES,
-) -> Union[tuple[int, float], tuple[list, list]]:
+) -> Union[tuple[int, float], tuple[List[int], List[float]]]:
     """
     Predicts the sentiment class for one or more text inputs.
 
     Args:
-        text (Union[str, list]): Input review text(s) to classify. Can be a single string or a list of strings.
-        model (SentimentClassifier, optional): The trained BERT-based sentiment model.
-        tokenizer (AutoTokenizer, optional): Hugging Face tokenizer for text processing.
-        device (Union[str, torch.device]): Device to run inference on ("cpu" or "cuda").
-        path_to_model (str, optional): Path to the pre-trained model if model is not passed.
-        n_classes (int, optional): Number of sentiment classes. Defaults to N_CLASSES.
-
+        text (Union[str, List[str]]): Input review text(s) to classify.
+        model (SentimentClassifier, optional): A preloaded model instance.
+        tokenizer (AutoTokenizer, optional): Tokenizer to use; if None, the default is loaded.
+        device (Union[str, torch.device]): Device to run inference on.
+        path_to_model (str, optional): File path to the pre-trained model.
+        n_classes (int, optional): Number of sentiment classes.
 
     Returns:
-        Union[int, list]: Predicted sentiment label:
-            - If a single text is provided:
-                - (int) Predicted sentiment label.
-                - (float) Confidence score (percentage).
-
-            - If a list of texts is provided:
-                - (list[int]) List of predicted sentiment labels.
-                - (list[float]) List of confidence scores (percentages).
-
-        Classification Labels:
-            - If `N_CLASSES = 5`:
-                - 1 = Really Negative
-                - 2 = Negative
-                - 3 = Neutral
-                - 4 = Positive
-                - 5 = Really Positive
-
-            - If `N_CLASSES = 3`:
-                - 1 = Negative
-                - 2 = Neutral
-                - 3 = Positive
+        If a single text is provided:
+            (int, float): Predicted sentiment label and confidence score (percentage).
+        If a list is provided:
+            (List[int], List[float]): Lists of predicted labels and corresponding confidence scores.
     """
+    # Validate and standardize input text
     if (
         text is None
         or (isinstance(text, list) and len(text) == 0)
         or (isinstance(text, str) and len(text) == 0)
     ):
         raise ValueError("Input text cannot be empty.")
-
     if isinstance(text, str):
-        text = [text]  # Convert a single string to a list
+        text = [text]
 
+    # Load model if not provided
     if model is None:
         if path_to_model is None:
             raise ValueError(
                 "Either a trained model or a path to the model must be provided."
             )
+        model = load_model(path_to_model, n_classes, device)
 
-        # Check if model path exists
-        if not os.path.exists(path_to_model):
-            raise ValueError(f"Model path {path_to_model} does not exist.")
-
-        # Load the model from the provided path
-        model = SentimentClassifier(n_classes=n_classes)
-        model.load_state_dict(torch.load(path_to_model, map_location=device))
-        model.to(device)
-        model.eval()  # Ensure model is in evaluation mode
-
+    # Load tokenizer if not provided
     if tokenizer is None:
-        tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)  # Default tokenizer
+        tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
     # Tokenize input text
     inputs = tokenizer(
@@ -90,47 +82,17 @@ def predict_sentiment(
         logits = model(
             input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"]
         )
-        probabilities = torch.nn.functional.softmax(
-            logits, dim=1
-        )  # Get confidence scores
-        confidence_scores, predicted_classes = probabilities.max(
-            dim=1
-        )  # Get max probability and corresponding class
+        probabilities = torch.nn.functional.softmax(logits, dim=1)
+        confidence_scores, predicted_classes = probabilities.max(dim=1)
         confidence_scores = (
             confidence_scores.cpu().numpy() * 100
         )  # Convert to percentage
-        predictions = predicted_classes.cpu().numpy() + 1  # Map to 1-5 scale
+        predictions = (
+            predicted_classes.cpu().numpy() + 1
+        )  # Adjust to 1-5 (or 1-3) scale
 
-    # Return a single prediction if one input text was provided, or a list if multiple texts were provided
+    # Return single prediction if only one text was provided
     if len(text) == 1:
         return predictions[0], confidence_scores[0]
     else:
         return predictions.tolist(), confidence_scores.tolist()
-
-# if __name__ == "__main__":
-#     # Prompt the user for input.
-#     # To input multiple texts, separate them using the delimiter "||"
-#     user_input = input("Enter text for sentiment analysis (use '||' to separate multiple inputs): ").strip()
-#
-#     # Determine whether to treat the input as a single text or a list of texts.
-#     if "||" in user_input:
-#         # Split the input on the delimiter and strip extra spaces
-#         sample_text = [text.strip() for text in user_input.split("||") if text.strip()]
-#     else:
-#         sample_text = user_input  # single text
-#
-#     # Provide the path to your trained model
-#     model_path = (
-#        PRETRAINED_MODEL_3_CLASS_PATH
-#        if model_choice == "3-class model"
-#        else PRETRAINED_MODEL_5_CLASS_PATH
-#     )
-#
-#     # Call the predict_sentiment function with the provided text(s)
-#     prediction, confidence = predict_sentiment(text=sample_text, path_to_model=model_path, device=DEVICE)
-#
-#     # Print the output.
-#     # If a single text was provided, prediction and confidence will be a single value;
-#     # if multiple texts were provided, they will be lists.
-#     print("Predicted Sentiment:", prediction)
-#     print("Confidence Score:", confidence)
