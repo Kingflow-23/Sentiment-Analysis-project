@@ -76,3 +76,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# To run the streamlit app, use:
+# streamlit run .\src\app.py --server.fileWatcherType none
