@@ -93,6 +93,6 @@ def predict_sentiment(
 
     # Return single prediction if only one text was provided
     if len(text) == 1:
-        return predictions[0], confidence_scores[0]
+        return [predictions[0]], [confidence_scores[0]]
     else:
         return predictions.tolist(), confidence_scores.tolist()
