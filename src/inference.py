@@ -45,10 +45,7 @@ def predict_sentiment(
         n_classes (int, optional): Number of sentiment classes.
 
     Returns:
-        If a single text is provided:
-            (int, float): Predicted sentiment label and confidence score (percentage).
-        If a list is provided:
-            (List[int], List[float]): Lists of predicted labels and corresponding confidence scores.
+        (List[int], List[float]): Lists of predicted labels and corresponding confidence scores.
     """
     # Validate and standardize input text
     if (
