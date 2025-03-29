@@ -63,7 +63,7 @@ def main():
         print(f"Predicted Sentiment: {sentiment} ({conf:.2f}%)\n")
 
         # Log each prediction
-        log_prediction(text, pred, conf)
+        log_prediction(text, pred, conf, "CLI")
 
 
 if __name__ == "__main__":
