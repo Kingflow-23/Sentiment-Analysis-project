@@ -90,7 +90,7 @@ def predict_sentiment_api(request: TextRequest):
     results = []
 
     for text, pred, conf in zip(texts, predictions, confidences):
-        log_prediction(text, pred, conf, "FastAPI")
+        log_prediction(text, pred, conf, "FastAPI", n_classes)
         sentiment = sentiment_labels.get(pred, "Unknown")
 
         # Optional: Flag low-confidence predictions
