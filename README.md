@@ -42,7 +42,7 @@ Sentiment analysis is a Natural Language Processing (NLP) task that determines w
 
 ### Challenges & Solutions 
 
-- **Test Coverage:** Achieved high test coverage using pytest with detailed unit tests and coverage reports.
+- **Test Coverage:** Achieved high test coverage using pytest with detailed unit tests and coverage reports. Using the command "pytest “test” -v --cov=”file/folder” --cov-report=term-missing"
 - **Overfitting:** Identified early overfitting during training; addressed through regularization, early stopping, and hyperparameter tuning.
 - **Evaluation:** Integrated multiple evaluation methods including accuracy metrics, confusion matrices, classification reports, and loss/accuracy plots.
 - **Collaboration:** Effective use of Git workflows and CI tools to manage team contributions.
