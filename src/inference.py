@@ -81,15 +81,8 @@ def predict_sentiment(
         )
         probabilities = torch.nn.functional.softmax(logits, dim=1)
         confidence_scores, predicted_classes = probabilities.max(dim=1)
-        confidence_scores = (
-            confidence_scores.cpu().numpy() * 100
-        )  # Convert to percentage
-        predictions = (
-            predicted_classes.cpu().numpy() + 1
-        )  # Adjust to 1-5 (or 1-3) scale
 
-    # Return single prediction if only one text was provided
-    if len(text) == 1:
-        return [predictions[0]], [confidence_scores[0]]
-    else:
-        return predictions.tolist(), confidence_scores.tolist()
+        confidence_scores = (confidence_scores.cpu().numpy() * 100).tolist()
+        predictions = (predicted_classes.cpu().numpy() + 1).tolist()
+
+    return predictions, confidence_scores
