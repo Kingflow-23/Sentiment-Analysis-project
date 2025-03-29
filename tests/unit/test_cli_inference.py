@@ -50,7 +50,8 @@ def test_invalid_model():
         assert "Invalid model choice" in str(
             excinfo.value
         ), f"Unexpected error message: {excinfo.value}"
-        
+
+
 # Test for single text input
 def test_single_text_prediction(mock_valid_model_path):
     test_args = ["cli.py", "I love this product!", "--model", "3-class"]

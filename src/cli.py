@@ -43,7 +43,10 @@ def main():
 
     try:
         predictions, confidences = predict_sentiment(
-            text=sample_texts, path_to_model=model_path, n_classes=n_classes, device=DEVICE
+            text=sample_texts,
+            path_to_model=model_path,
+            n_classes=n_classes,
+            device=DEVICE,
         )
     except Exception as e:
         print(f"❌ Error during sentiment analysis: {e}")
