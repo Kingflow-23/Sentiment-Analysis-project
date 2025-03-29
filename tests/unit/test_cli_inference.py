@@ -40,6 +40,17 @@ def test_no_model_or_path(mock_valid_model_path):
         assert excinfo.value.code == 2, f"Unexpected exit code: {excinfo.value.code}"
 
 
+def test_invalid_model():
+    test_args = ["cli.py", "I love this product!", "--model", "n-classes"]
+
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(ValueError) as excinfo:
+            main()
+
+        assert "Invalid model choice" in str(
+            excinfo.value
+        ), f"Unexpected error message: {excinfo.value}"
+        
 # Test for single text input
 def test_single_text_prediction(mock_valid_model_path):
     test_args = ["cli.py", "I love this product!", "--model", "3-class"]
@@ -71,7 +82,7 @@ def test_multiple_texts_prediction(mock_valid_model_path):
             main()
             output = mock_stdout.getvalue()
 
-            assert "Text 0: I love this product!" in output
+            assert "Text 1: I love this product!" in output
             assert "Predicted Sentiment:" in output
             assert "%" in output  # Confidence format check
             confidence_values = [
@@ -79,7 +90,7 @@ def test_multiple_texts_prediction(mock_valid_model_path):
             ]
             assert all(0 <= conf <= 100 for conf in confidence_values)
 
-            assert "Text 1: This is so bad!" in output
+            assert "Text 2: This is so bad!" in output
             assert "Predicted Sentiment:" in output
 
 
@@ -97,7 +108,7 @@ def test_5_class_model(mock_valid_model_path):
             main()
             output = mock_stdout.getvalue()
 
-            assert "Text 0: I love this product!" in output
+            assert "Text 1: I love this product!" in output
             assert "Predicted Sentiment:" in output
             assert "%" in output  # Confidence format check
             confidence_values = [
@@ -105,5 +116,5 @@ def test_5_class_model(mock_valid_model_path):
             ]
             assert all(0 <= conf <= 100 for conf in confidence_values)
 
-            assert "Text 1: This is so bad!" in output
+            assert "Text 2: This is so bad!" in output
             assert "Predicted Sentiment:" in output
