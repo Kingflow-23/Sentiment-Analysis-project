@@ -42,10 +42,10 @@ jobs:
 
       - name: Install Linters
         run: |
-          pip install flake8 black
+          pip install black pylint
 
-      - name: Run Flake8 (Code Quality Check)
-        run: flake8 src/
+      - name: Run Pylint (Code Quality Check)
+        run: pylint src/ 
 
       - name: Run Black (Code Formatting Check)
         run: black --check src/
