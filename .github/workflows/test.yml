@@ -28,15 +28,18 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/huggingface
-          key: huggingface-${{ runner.os }}-bert-base-uncased
+          key: huggingface-${{ runner.os }}-bert-base-uncased-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
-            huggingface-${{ runner.os }}-
+            huggingface-${{ runner.os }}-bert-base-uncased-
 
       - name: Preload Model
         run: |
-          python -c "from transformers import AutoModel, AutoTokenizer; \
-                     AutoModel.from_pretrained('bert-base-uncased'); \
-                     AutoTokenizer.from_pretrained('bert-base-uncased')"
+          python -c "from transformers import BertModel, AutoTokenizer; \
+                     try: \
+                       BertModel.from_pretrained('bert-base-uncased'); \
+                       AutoTokenizer.from_pretrained('bert-base-uncased'); \
+                     except Exception as e: \
+                       print(f'Error loading model or tokenizer: {e}')"
 
       - name: Run Unit Tests
         run: |
