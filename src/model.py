@@ -24,7 +24,7 @@ class SentimentClassifier(nn.Module):
             dropout_prob (float): Dropout probability for regularization.
         """
         super(SentimentClassifier, self).__init__()
-        self.bert = BertModel.from_pretrained(model_name)
+        self.bert = BertModel.from_pretrained(model_name, weights_only=False)
         self.dropout = nn.Dropout(p=dropout_prob)
         self.fc = nn.Linear(self.bert.config.hidden_size, n_classes)
 
