@@ -341,11 +341,29 @@ python src/cli.py "This is an amazing product!" --model 3-class
 ```
 **Demo**
 
+- **3-Class**
+
+![cli_3_classes](https://github.com/user-attachments/assets/d714d347-8eef-4ecf-ab9f-959651b1b82d)
+
+- **5-Class**
+
+![cli_5_classes](https://github.com/user-attachments/assets/0bf9c8a4-8c22-4f3f-bd25-00ebea4df4ab)
+
 - **API**
 ```bash
 uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
 ```
 **Demo**
+
+![fastapi_health_check](https://github.com/user-attachments/assets/9c5d14fd-d58f-4e2b-afae-e8b9f213a6ba)
+
+- **3-Class**
+
+![fastapi_3_classes](https://github.com/user-attachments/assets/c6ed9ce7-a9a1-42a0-be3a-e9aed9fcccf1)
+
+- **5-Class**
+
+![fastapi_5_classes](https://github.com/user-attachments/assets/f90ba7f2-7da3-4c89-a7ff-45539027635c)
 
 - **Streamlit**:
 Launch the web app:
@@ -355,13 +373,13 @@ streamlit run src/app.py --server.fileWatcherType none
 
 **Demo**
 
-- **3-Sentiment Classification Demo**:
+- **3-Class**:
 
-https://github.com/user-attachments/assets/e283cf05-d137-4d9a-a9bd-d177e33f5b55
+![streamlit_3_classes](https://github.com/user-attachments/assets/7f13f4da-043a-4a29-a429-bc58f145b944)
 
-- **5-Sentiment Classification Demo**:
+- **5-Class**:
 
-https://github.com/user-attachments/assets/ec03dc7a-9c03-4644-8ccd-a9715ce48f05
+![streamlit_5_classes](https://github.com/user-attachments/assets/962429af-e90a-401b-9026-d923d5818f93)
 
 The confidence scores that we see next to the prediction are quite high as we can see in the result and evaluation in following part. We have to take it into account for further refinement regarding this project.
 
