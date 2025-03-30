@@ -57,52 +57,54 @@ Sentiment analysis is a Natural Language Processing (NLP) task that determines w
 Sentiment-Analysis-project/
 ├── .github/
 │   └── workflows/
-│       ├── build.yml                           # Build and Push Docker image to DockerHub
-│       ├── evaluate.yml                        # Evaluate the model on Fake dataset at each push on main
-│       └── test.yml                            # Workflow which runs all our unit test and ensure code linting
+│       ├── build.yml                       # Build and Push Docker image to DockerHub
+│       ├── evaluate.yml                    # Evaluate the model on Fake dataset at each push on main
+│       └── test.yml                        # Workflow which runs unit tests and ensure code linting
 ├── dataset/                    
-│   ├── real_datasets/                          # Real-world dataset files
-│   │   └── dataset.csv                         # Sample dataset file
-│   └── test_datasets/                          # Automatically generated test files
-│       └── generate_test_files.py              # Script to generate test files
+│   ├── real_datasets/                      # Real-world dataset files
+│   │   └── dataset.csv                     # Sample dataset file
+│   └── test_datasets/                      # Automatically generated test files
+│       └── generate_test_files.py          # Script to generate test files
 ├── output/
-│   ├── data_analysis/                          # Data analysis results
+│   ├── data_analysis/                      # Data analysis results
 │   ├──database/
-│   │   └── sentiment_logs.db                   # Sqlite database to store inferences results
+│   │   └── sentiment_logs.db               # Sqlite database to store inferences results
 │   └── model_output/
-│       ├── training/                           # Training outputs, saved models, history, plots
-│       └── evaluation/                         # Evaluation outputs and plots
+│       ├── training/                       # Training outputs, saved models, history, plots
+│       └── evaluation/                     # Evaluation outputs and plots
 ├── src/
-│   ├── api.py                                  # FastApi for inference
-│   ├── app.py                                  # Streamlit app for inference
-│   ├── cli.py                                  # Command Line Interface for inference
-│   ├── data_extraction.py                      # Loads raw data from files
-│   ├── data_processing.py                      # Cleans and tokenizes text data, splits dataset
-│   ├── dataloader.py                           # Constructs PyTorch DataLoaders
-│   ├── db_logger.py                            # Function to init the Sqlite database
-│   ├── main.py                                 # Main training and evaluation script
-│   ├── model.py                                # Defines the SentimentClassifier model
-│   ├── train.py                                # Contains training routines and plotting functions
-│   ├── evaluate.py                             # Contains evaluation and plotting functions
-│   └── inference.py                            # Provides sentiment prediction for new inputs
+│   ├── api.py                              # FastApi for inference
+│   ├── app.py                              # Streamlit app for inference
+│   ├── cli.py                              # Command Line Interface for inference
+│   ├── data_extraction.py                  # Loads raw data from files
+│   ├── data_processing.py                  # Cleans and tokenizes text data, splits dataset
+│   ├── dataloader.py                       # Constructs PyTorch DataLoaders
+│   ├── db_logger.py                        # Function to init the Sqlite database
+│   ├── main.py                             # Main training and evaluation script
+│   ├── model.py                            # Defines the SentimentClassifier model
+│   ├── train.py                            # Contains training routines and plotting functions
+│   ├── evaluate.py                         # Contains evaluation and plotting functions
+│   └── inference.py                        # Provides sentiment prediction for new inputs
 ├── tests/
 │   ├── evaluation/
-│   │   └── evaluate_model.py                   # Function used by github workflow for model evaluation.
+│   │   └── evaluate_model.py               # Function used by github workflow for model evaluation.
 │   └── unit/
-│       ├── test_data_extraction.py             # Unit tests for data extraction
-│       ├── test_data_processing.py             # Unit tests for data processing
-│       ├── test_dataloader.py                  # Unit tests for data loading
-│       ├── test_model.py                       # Unit tests for model initialization
-│       ├── test_train.py                       # Unit tests for training and evaluation routines
-│       └── test_inference.py                   # Unit tests for the inference functionality
-├── .gitignore                                  # Specifies files to ignore in the Git repository
-├── config.py                                   # Configuration settings (paths, model parameters, etc.)
-├── dataset_config.py                           # Ai-Generated Fake Dataset of review|score
-├── Dockerfile                                  # Builds the Docker image for the project.
-├── docker-compose.yml                          #  Defines services (Streamlit, FastAPI, CLI) and maps volumes for persistent storage.
-├── entrypoint.sh                               #  Script to set the entry point mode (API, CLI, or Streamlit) for the Docker container.
-├── README.md                                   # Project documentation (this file)
-└── requirements.txt                            # Dependencies required to run the project
+│       ├── test_api_inference.py           # Unit tests for FastApi inference
+│       ├── test_cli_inference.py           # Unit tests or CLI inferences
+│       ├── test_data_extraction.py         # Unit tests for data extraction
+│       ├── test_data_processing.py         # Unit tests for data processing
+│       ├── test_dataloader.py              # Unit tests for data loading
+│       ├── test_model.py                   # Unit tests for model initialization
+│       ├── test_train.py                   # Unit tests for training and evaluation routines
+│       └── test_inference.py               # Unit tests for the inference functionality
+├── .gitignore                              # Specifies files to ignore in the Git repository
+├── config.py                               # Configuration settings (paths, model parameters, etc.)
+├── dataset_config.py                       # Ai-Generated Fake Dataset of review|score
+├── Dockerfile                              # Builds the Docker image for the project.
+├── docker-compose.yml                      #  Defines services (Streamlit, FastAPI, CLI) and maps volumes.
+├── entrypoint.sh                           #  Set the entry point mode for the Docker container.
+├── README.md                               # Project documentation (this file)
+└── requirements.txt                        # Dependencies required to run the project
 ```
 
 ---
