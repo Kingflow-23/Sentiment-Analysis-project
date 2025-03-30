@@ -34,29 +34,23 @@ jobs:
 
       - name: Preload Model
         run: |
-          python -c "from transformers import BertModel, AutoTokenizer; \
-                     try: \
-                       BertModel.from_pretrained('bert-base-uncased'); \
-                       AutoTokenizer.from_pretrained('bert-base-uncased'); \
-                     except Exception as e: \
-                       print(f'Error loading model or tokenizer: {e}')"
+          python -c "from transformers import BertModel, AutoTokenizer; 
+                     import sys; 
+                     try: 
+                         BertModel.from_pretrained('bert-base-uncased'); 
+                         AutoTokenizer.from_pretrained('bert-base-uncased'); 
+                         print('Model and tokenizer loaded successfully!'); 
+                     except Exception as e: 
+                         print(f'Error loading model or tokenizer: {e}', file=sys.stderr);"
 
       - name: Run Unit Tests
         run: |
           export PYTHONPATH=.
           pytest --disable-warnings -v --cov tests/
 
-      - name: Run Black (Code Formatting Check)
+      - name: Run Code Quality Checks
         run: |
           export PYTHONPATH=.
           black --check src/
-
-      - name: Run Pylint (Code Quality Check)
-        run: |
-          export PYTHONPATH=.
           pylint src/
-
-      - name: Run Flake8 (Code Style Check)
-        run: |
-          export PYTHONPATH=.
           flake8 src/ --ignore=E501,E203,W503
