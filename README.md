@@ -343,11 +343,11 @@ python src/cli.py "This is an amazing product!" --model 3-class
 
 - **3-Class**
 
-![cli_3_classes](https://github.com/user-attachments/assets/d714d347-8eef-4ecf-ab9f-959651b1b82d)
+<img width="1070" alt="cli_3_classes" src="https://github.com/user-attachments/assets/24050aff-623e-4b39-bb5f-530aaff80c57" />
 
 - **5-Class**
 
-![cli_5_classes](https://github.com/user-attachments/assets/0bf9c8a4-8c22-4f3f-bd25-00ebea4df4ab)
+<img width="1067" alt="cli_5_classes" src="https://github.com/user-attachments/assets/52a7dd77-0d2e-49f7-895b-b45e87cc1a21" />
 
 - **API**
 ```bash
@@ -355,15 +355,15 @@ uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
 ```
 **Demo**
 
-![fastapi_health_check](https://github.com/user-attachments/assets/9c5d14fd-d58f-4e2b-afae-e8b9f213a6ba)
+<img width="1040" alt="fastapi_health_check" src="https://github.com/user-attachments/assets/a5a8ec62-7246-4855-95cf-9b82e1347996" />
 
 - **3-Class**
 
-![fastapi_3_classes](https://github.com/user-attachments/assets/c6ed9ce7-a9a1-42a0-be3a-e9aed9fcccf1)
+<img width="1030" alt="fastapi_3_classes" src="https://github.com/user-attachments/assets/9040a14f-4f05-4cd9-a77a-fc1f0b33691f" />
 
 - **5-Class**
 
-![fastapi_5_classes](https://github.com/user-attachments/assets/f90ba7f2-7da3-4c89-a7ff-45539027635c)
+<img width="1036" alt="fastapi_5_classes" src="https://github.com/user-attachments/assets/d6b3a6fc-d774-4760-b28d-56c558c4c99f" />
 
 - **Streamlit**:
 Launch the web app:
@@ -375,11 +375,11 @@ streamlit run src/app.py --server.fileWatcherType none
 
 - **3-Class**:
 
-![streamlit_3_classes](https://github.com/user-attachments/assets/7f13f4da-043a-4a29-a429-bc58f145b944)
+<img width="1073" alt="streamlit_3_classes" src="https://github.com/user-attachments/assets/c8738d79-dfcc-480d-9d65-1ef1b2bfa378" />
 
 - **5-Class**:
 
-![streamlit_5_classes](https://github.com/user-attachments/assets/962429af-e90a-401b-9026-d923d5818f93)
+<img width="1076" alt="streamlit_5_classes" src="https://github.com/user-attachments/assets/89b4f62c-04ef-42d3-9d0b-43f601a0a169" />
 
 The confidence scores that we see next to the prediction are quite high as we can see in the result and evaluation in following part. We have to take it into account for further refinement regarding this project.
 
