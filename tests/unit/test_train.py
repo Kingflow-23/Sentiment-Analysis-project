@@ -17,7 +17,6 @@ from dataset_config import FAKE_DATASET
 from config import (
     SENTIMENT_MAPPING,
     MODEL_NAME,
-    N_CLASSES,
     DEVICE,
     MODEL_TRAINING_OUTPUT_DIR,
     MODEL_EVALUATION_OUTPUT_DIR,
@@ -37,7 +36,7 @@ def sample_dataloader():
 @pytest.fixture
 def model():
     """Creates a SentimentClassifier model instance."""
-    return SentimentClassifier(n_classes=N_CLASSES).to(DEVICE)
+    return SentimentClassifier(n_classes=5).to(DEVICE)
 
 
 @pytest.fixture

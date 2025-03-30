@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  streamlit_app:
+    build: .
+    container_name: sentiment-streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      - ENTRYPOINT_MODE=streamlit
+      - SQLITE_DB_PATH=/app/database/sentiment_logs.db 
+    volumes:
+      - dataset_volume:/app/dataset
+      - output_volume:/app/output
+      - ./output/database:/app/database 
+
+  fastapi_app:
+    build: .
+    container_name: sentiment-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENTRYPOINT_MODE=api
+      - SQLITE_DB_PATH=/app/database/sentiment_logs.db 
+    volumes:
+      - dataset_volume:/app/dataset
+      - output_volume:/app/output
+      - ./output/database:/app/database 
+
+  cli_app:
+    build: .
+    container_name: sentiment-cli
+    environment:
+      - ENTRYPOINT_MODE=cli
+      - SQLITE_DB_PATH=/app/database/sentiment_logs.db 
+    command: ["I love this product!"]
+    volumes:
+      - dataset_volume:/app/dataset
+      - output_volume:/app/output
+      - ./output/database:/app/database 
+
+volumes:
+  dataset_volume:
+  output_volume:
+  sqlite_db:
+    external: true  # Set this as an external volume so it's mapped to the local system

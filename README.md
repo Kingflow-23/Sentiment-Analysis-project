@@ -16,7 +16,8 @@ This project implements an end-to-end sentiment analysis pipeline using BERT. Ou
   - [Config](#config)
   - [Data Extraction & Preprocessing](#data-extraction--preprocessing)
   - [Model Training & Evaluation](#model-training--evaluation)
-  - [Streamlit Web App](#streamlit-web-app)
+  - [Inference & Deployment](#inference--deployment)
+- [Docker & MLOps Pipeline](#docker--mlops-pipeline)
 - [Results & Evaluation](#results--evaluation)
 - [Future Improvements](#future-improvements)
 - [References](#references)
@@ -42,7 +43,7 @@ Sentiment analysis is a Natural Language Processing (NLP) task that determines w
 
 ### Challenges & Solutions 
 
-- **Test Coverage:** Achieved high test coverage using pytest with detailed unit tests and coverage reports.
+- **Test Coverage:** Achieved high test coverage using pytest with detailed unit tests and coverage reports. Using the command "pytest “test” -v --cov=”file/folder” --cov-report=term-missing"
 - **Overfitting:** Identified early overfitting during training; addressed through regularization, early stopping, and hyperparameter tuning.
 - **Evaluation:** Integrated multiple evaluation methods including accuracy metrics, confusion matrices, classification reports, and loss/accuracy plots.
 - **Collaboration:** Effective use of Git workflows and CI tools to manage team contributions.
@@ -54,39 +55,56 @@ Sentiment analysis is a Natural Language Processing (NLP) task that determines w
 
 ```python
 Sentiment-Analysis-project/
+├── .github/
+│   └── workflows/
+│       ├── build.yml                       # Build and Push Docker image to DockerHub
+│       ├── evaluate.yml                    # Evaluate the model on Fake dataset at each push on main
+│       └── test.yml                        # Workflow which runs unit tests and ensure code linting
 ├── dataset/                    
-│   ├── real_datasets/                          # Real-world dataset files
-│   │   └── dataset.csv                         # Sample dataset file
-│   └── test_datasets/                          # Automatically generated test files
-│       └── generate_test_files.py              # Script to generate test files
+│   ├── real_datasets/                      # Real-world dataset files
+│   │   └── dataset.csv                     # Sample dataset file
+│   └── test_datasets/                      # Automatically generated test files
+│       └── generate_test_files.py          # Script to generate test files
 ├── output/
-│   ├── data_analysis/                          # Data analysis results
+│   ├── data_analysis/                      # Data analysis results
+│   ├──database/
+│   │   └── sentiment_logs.db               # Sqlite database to store inferences results
 │   └── model_output/
-│       ├── training/                           # Training outputs, saved models, history, plots
-│       └── evaluation/                         # Evaluation outputs and plots
+│       ├── training/                       # Training outputs, saved models, history, plots
+│       └── evaluation/                     # Evaluation outputs and plots
 ├── src/
-│   ├── app.py                                  # Streamlit app for inference
-│   ├── data_extraction.py                      # Loads raw data from files
-│   ├── data_processing.py                      # Cleans and tokenizes text data, splits dataset
-│   ├── dataloader.py                           # Constructs PyTorch DataLoaders
-│   ├── main.py                                 # Main training and evaluation script
-│   ├── model.py                                # Defines the SentimentClassifier model
-│   ├── train.py                                # Contains training routines and plotting functions
-│   ├── evaluate.py                             # Contains evaluation and plotting functions
-│   └── inference.py                            # Provides sentiment prediction for new inputs
+│   ├── api.py                              # FastApi for inference
+│   ├── app.py                              # Streamlit app for inference
+│   ├── cli.py                              # Command Line Interface for inference
+│   ├── data_extraction.py                  # Loads raw data from files
+│   ├── data_processing.py                  # Cleans and tokenizes text data, splits dataset
+│   ├── dataloader.py                       # Constructs PyTorch DataLoaders
+│   ├── db_logger.py                        # Function to init the Sqlite database
+│   ├── main.py                             # Main training and evaluation script
+│   ├── model.py                            # Defines the SentimentClassifier model
+│   ├── train.py                            # Contains training routines and plotting functions
+│   ├── evaluate.py                         # Contains evaluation and plotting functions
+│   └── inference.py                        # Provides sentiment prediction for new inputs
 ├── tests/
+│   ├── evaluation/
+│   │   └── evaluate_model.py               # Function used by github workflow for model evaluation.
 │   └── unit/
-│       ├── test_data_extraction.py             # Unit tests for data extraction
-│       ├── test_data_processing.py             # Unit tests for data processing
-│       ├── test_dataloader.py                  # Unit tests for data loading
-│       ├── test_model.py                       # Unit tests for model initialization
-│       ├── test_train.py                       # Unit tests for training and evaluation routines
-│       └── test_inference.py                   # Unit tests for the inference functionality
-├── .gitignore                                  # Specifies files to ignore in the Git repository
-├── config.py                                   # Configuration settings (paths, model parameters, etc.)
-├── dataset_config.py                           # Ai-Generated Fake Dataset of review|score
-├── README.md                                   # Project documentation (this file)
-└── requirements.txt                            # Dependencies required to run the project
+│       ├── test_api_inference.py           # Unit tests for FastApi inference
+│       ├── test_cli_inference.py           # Unit tests or CLI inferences
+│       ├── test_data_extraction.py         # Unit tests for data extraction
+│       ├── test_data_processing.py         # Unit tests for data processing
+│       ├── test_dataloader.py              # Unit tests for data loading
+│       ├── test_model.py                   # Unit tests for model initialization
+│       ├── test_train.py                   # Unit tests for training and evaluation routines
+│       └── test_inference.py               # Unit tests for the inference functionality
+├── .gitignore                              # Specifies files to ignore in the Git repository
+├── config.py                               # Configuration settings (paths, model parameters, etc.)
+├── dataset_config.py                       # Ai-Generated Fake Dataset of review|score
+├── Dockerfile                              # Builds the Docker image for the project.
+├── docker-compose.yml                      #  Defines services (Streamlit, FastAPI, CLI) and maps volumes.
+├── entrypoint.sh                           #  Set the entry point mode for the Docker container.
+├── README.md                               # Project documentation (this file)
+└── requirements.txt                        # Dependencies required to run the project
 ```
 
 ---
@@ -108,6 +126,7 @@ Sentiment-Analysis-project/
    ```bash
    python -m venv .
    source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
 3. **Install Required Packages:**
 
@@ -310,23 +329,31 @@ python src/main.py
 
 ---
 
-## Streamlit Web App
+## Inference & Deployment
 
-- Interactive Interface:
+- **Inference**:
 
-The Streamlit app (src.app.py) provides a user-friendly web interface for real-time sentiment analysis, complete with color-coded results.
+Use *src/inference.py* to predict sentiment from new text inputs. This module is used by the CLI (*src/cli.py*), FastAPI (*src/api.py*), and Streamlit (*src/app.py*) interfaces.
 
-- To Run the Web App:
+- **CLI**
+```bash
+python src/cli.py "This is an amazing product!" --model 3-class
+```
+**Demo**
 
-```bash 
-streamlit run .\src\app.py --server.fileWatcherType none 
+- **API**
+```bash
+uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload
+```
+**Demo**
+
+- **Streamlit**:
+Launch the web app:
+```bash
+streamlit run src/app.py --server.fileWatcherType none
 ```
 
-Specified argument is here to hide warning at beginning.
-
----
-
-### Sentiment Analysis Demo
+**Demo**
 
 - **3-Sentiment Classification Demo**:
 
@@ -339,6 +366,58 @@ https://github.com/user-attachments/assets/ec03dc7a-9c03-4644-8ccd-a9715ce48f05
 The confidence scores that we see next to the prediction are quite high as we can see in the result and evaluation in following part. We have to take it into account for further refinement regarding this project.
 
 --- 
+
+## Docker & MLOps Pipeline
+
+### Dockerfile & Entrypoint
+
+- **Dockerfile**:
+Builds the Docker image by installing dependencies, copying project files, and setting up the default entrypoint through entrypoint.sh.
+
+- **entrypoint.sh**:
+Determines the mode in which the container will run (API, CLI, or Streamlit) based on the ENTRYPOINT_MODE environment variable.
+
+### Docker Compose
+
+- **docker-compose.yml**:
+
+Defines three services:
+
+- **streamlit_app**: Runs the Streamlit interface on port 8501.
+
+- **fastapi_app**: Runs the FastAPI API on port 8000.
+
+- **cli_app**: Executes the CLI tool.
+
+Each service uses shared volumes for datasets, model outputs, and database persistence.
+
+### Running the Docker Containers
+
+1. **Build the Docker Image**:
+
+```bash
+docker build --no-cache -t sentiment-analysis .
+```
+
+2. **Start Services**:
+
+```bash
+docker-compose up -d
+```
+
+3. **Test the Services**:
+
+- **Streamlit**: http://localhost:8501
+
+- **FastAPI**: http://localhost:8000/docs
+
+- **CLI**: Check logs with docker logs sentiment-cli
+
+4. **Stop Services**:
+
+```bash
+docker-compose down
+```
 
 ## Results & Evaluation
 

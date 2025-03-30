@@ -1,7 +1,6 @@
 import os
 import torch
 import pytest
-import numpy as np
 
 from unittest.mock import Mock
 from transformers import AutoTokenizer
@@ -104,34 +103,27 @@ def setup_model():
 @pytest.mark.parametrize(
     "text, expected_prediction_type, expected_confidence_type",
     [
-        ("This product is amazing!", int, float),  # Single string input
+        ("This product is amazing!", list, list),
         (
             ["Worst experience ever!", "It was okay.", "Absolutely loved it!"],
             list,
             list,
-        ),  # List input
+        ),
     ],
 )
 def test_predict_sentiment(
-    setup_model, text, expected_prediction_type, expected_confidence_type
+    setup_model,
+    text: str,
+    expected_prediction_type: type,
+    expected_confidence_type: type,
 ):
-    """
-    Test that `predict_sentiment` returns the correct data types based on input.
-
-    Verifies that a single text input returns a tuple (int, float) and a list input returns
-    a tuple (list, list) where the first element is the prediction and the second is the confidence.
-    """
+    """Verifies predict_sentiment returns correct data types."""
     model, tokenizer = setup_model
     prediction, confidence = predict_sentiment(text, model=model, tokenizer=tokenizer)
 
-    if isinstance(prediction, np.integer):
-        prediction = int(prediction)
     assert isinstance(
         prediction, expected_prediction_type
     ), f"Expected {expected_prediction_type}, got {type(prediction)}"
-
-    if isinstance(confidence, np.floating):
-        confidence = float(confidence)
     assert isinstance(
         confidence, expected_confidence_type
     ), f"Expected {expected_confidence_type}, got {type(confidence)}"
@@ -233,16 +225,17 @@ def test_predict_sentiment_model_loading(monkeypatch):
     """
     Test that the predict_sentiment function correctly loads the model from a file.
 
-    This test verifies that when no model is provided (model=None), the function loads the model
-    from the given path. It also checks that the model's load_state_dict, to, and eval methods
-    are called, and that the inference produces a predictable output.
+    Ensures that when no model is provided (model=None), the function loads it from
+    the given path, and methods like load_state_dict, to, and eval are properly called.
+    Also, verifies that single-text input returns a list and multi-text input returns
+    a list of predictions and confidences.
     """
-    # Flags to record that each method is called
+    # Flags to track method calls
     load_called = False
     to_called = False
     eval_called = False
 
-    # Dummy methods to replace SentimentClassifier methods
+    # Mock SentimentClassifier methods
     def dummy_load_state_dict(self, state_dict, strict=True):
         nonlocal load_called
         load_called = True
@@ -262,19 +255,17 @@ def test_predict_sentiment_model_loading(monkeypatch):
     monkeypatch.setattr(SentimentClassifier, "to", dummy_to)
     monkeypatch.setattr(SentimentClassifier, "eval", dummy_eval)
 
-    # Use a dummy model path and force os.path.exists to return True for it
-    dummy_model_path = "dummy_model_path.pth"
-    monkeypatch.setattr(
-        os.path, "exists", lambda path: True if path == dummy_model_path else False
-    )
+    # Mock model path and make os.path.exists return True
+    dummy_model_path = "dummy_model.pth"
+    monkeypatch.setattr(os.path, "exists", lambda path: path == dummy_model_path)
 
-    # Patch torch.load to return a dummy state dictionary
+    # Mock torch.load to return a dummy state dict
     def dummy_torch_load(path, map_location):
         return {"weight": torch.zeros(10, 10), "bias": torch.zeros(10)}
 
     monkeypatch.setattr(torch, "load", dummy_torch_load)
 
-    # Create a DummyEncoding class that behaves like a BatchEncoding and supports .to()
+    # Create a DummyEncoding class to behave like BatchEncoding
     class DummyEncoding(dict):
         def to(self, device):
             return self
@@ -282,41 +273,52 @@ def test_predict_sentiment_model_loading(monkeypatch):
     # Dummy tokenizer that returns DummyEncoding
     class DummyTokenizer:
         def __call__(self, text, padding, truncation, max_length, return_tensors):
+            batch_size = len(text) if isinstance(text, list) else 1
             return DummyEncoding(
                 {
-                    "input_ids": torch.tensor([[1, 2, 3]]),
-                    "attention_mask": torch.tensor([[1, 1, 1]]),
+                    "input_ids": torch.ones((batch_size, 10), dtype=torch.int64),
+                    "attention_mask": torch.ones((batch_size, 10), dtype=torch.int64),
                 }
             )
 
-    # Patch AutoTokenizer.from_pretrained to return our DummyTokenizer
+    # Mock AutoTokenizer.from_pretrained
     monkeypatch.setattr(
         "src.inference.AutoTokenizer.from_pretrained", lambda name: DummyTokenizer()
     )
 
-    # Patch the model's forward method to simulate inference.
-    # For N_CLASSES = 3, choose dummy logits so that softmax and argmax yield a predictable prediction.
-    dummy_logits = torch.tensor([[0.1, 0.9, 0.0]])
-    monkeypatch.setattr(
-        SentimentClassifier, "__call__", lambda self, **kwargs: dummy_logits
-    )
+    # Mock model's forward method to return dummy logits
+    def dummy_forward(self, input_ids, attention_mask):
+        batch_size = input_ids.shape[0]
+        dummy_logits = torch.tensor([[0.1, 0.9, 0.0]] * batch_size)  # Class index 1
+        return dummy_logits
 
-    # Call predict_sentiment with model=None so that the model is loaded from file.
-    prediction, confidence = predict_sentiment(
-        text="Test review",
-        model=None,
-        tokenizer=None,  # Will trigger the dummy tokenizer
-        device="cpu",
-        path_to_model=dummy_model_path,
-    )
+    monkeypatch.setattr(SentimentClassifier, "__call__", dummy_forward)
 
-    # Verify that the branch for model loading was executed:
-    assert load_called, "SentimentClassifier.load_state_dict was not called"
-    assert to_called, "SentimentClassifier.to was not called"
-    assert eval_called, "SentimentClassifier.eval was not called"
+    # Test cases for single and list input
+    test_cases = [
+        ("Test review", [2]),  # Single input -> should return list
+        (["Great!", "Bad!", "Neutral."], [2, 2, 2]),  # List input -> list
+    ]
 
-    # Given our dummy_logits, softmax -> argmax yields index 1; adding 1 gives prediction 2.
-    assert prediction == 2, f"Expected prediction 2, got {prediction}"
+    for text_input, expected_predictions in test_cases:
+        prediction, confidence = predict_sentiment(
+            text=text_input,
+            model=None,
+            tokenizer=None,
+            device="cpu",
+            path_to_model=dummy_model_path,
+        )
+
+        # Check method calls
+        assert load_called, "SentimentClassifier.load_state_dict was not called"
+        assert to_called, "SentimentClassifier.to was not called"
+        assert eval_called, "SentimentClassifier.eval was not called"
+
+        # Ensure predictions are always returned as lists
+        assert isinstance(prediction, list), f"Expected list, got {type(prediction)}"
+        assert (
+            prediction == expected_predictions
+        ), f"Expected {expected_predictions}, got {prediction}"
 
 
 def test_missing_tokenizer(setup_model):
@@ -331,10 +333,7 @@ def test_missing_tokenizer(setup_model):
         text="This is a test text", model=model, tokenizer=None
     )
 
-    if isinstance(prediction, np.integer):
-        prediction = int(prediction)
-
-    assert isinstance(prediction, int), "The prediction should be of type int."
+    assert isinstance(prediction, list), "The prediction should be of type list."
 
 
 def test_invalid_input(setup_model):
@@ -379,10 +378,9 @@ def test_prediction_range(setup_model_name, expected_range):
     model, tokenizer = setup_model_name
     text = "I really enjoyed this movie!"
 
-    prediction, confidence = predict_sentiment(text, model=model, tokenizer=tokenizer)
+    prediction, _ = predict_sentiment(text, model=model, tokenizer=tokenizer)
 
-    if isinstance(prediction, np.integer):
-        prediction = int(prediction)
+    prediction = int(prediction[0])
 
     assert (
         prediction in expected_range

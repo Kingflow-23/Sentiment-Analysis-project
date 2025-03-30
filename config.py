@@ -84,3 +84,7 @@ COLOR_MAPPING = {
     "Positive": "green",
     "Really Positive": "green",
 }
+
+# ---------------------------------------------------------------------------
+# Docker config
+DB_PATH = os.environ.get("SQLITE_DB_PATH", "output/database/sentiment_logs.db")

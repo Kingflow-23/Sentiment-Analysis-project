@@ -6,10 +6,11 @@ import warnings
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 from config import *
+from src.db_logger import log_prediction
 from src.inference import predict_sentiment
 
 
-# ------------------------ 🚀 Streamlit App ------------------------
+# --------------------------- 🚀 Streamlit App ---------------------------
 def main():
     st.set_page_config(page_title=APP_NAME, layout="centered")
 
@@ -41,11 +42,14 @@ def main():
     # Button to analyze sentiment
     if st.button("🔍 Analyze Sentiment"):
         if user_input:
+
+            texts = [t.strip() for t in user_input.split("||") if t.strip()]
+
             try:
                 # Load model and tokenizer
                 device = torch.device(DEVICE)
-                prediction, confidence = predict_sentiment(
-                    text=user_input,
+                predictions, confidences = predict_sentiment(
+                    text=texts,
                     path_to_model=model_path,
                     device=device,
                     n_classes=n_classes,
@@ -58,15 +62,25 @@ def main():
                     else SENTIMENT_MAPPING
                 )
 
-                # Get sentiment label & matching color
-                sentiment = sentiment_labels.get(prediction, "Unknown sentiment")
-                color = COLOR_MAPPING.get(sentiment, "black")
+                st.subheader("Results:")
+                for idx, (text, pred, conf) in enumerate(
+                    zip(texts, predictions, confidences)
+                ):
+                    sentiment = sentiment_labels.get(pred, "Unknown sentiment")
+                    color = COLOR_MAPPING.get(
+                        sentiment, "black"
+                    )  # Get color, default to black if missing
 
-                # Display result with color formatting
-                st.markdown(
-                    f"<h3 style='text-align: center; color: {color};'>Predicted Sentiment: {sentiment} at {confidence:.2f}% confidence</h3>",
-                    unsafe_allow_html=True,
-                )
+                    # Log the prediction
+                    log_prediction(text, pred, conf, "Streamlit App", n_classes)
+
+                    # Display results with color
+                    st.markdown(f"**Text {idx + 1}:** {text}")
+                    st.markdown(
+                        f"<span style='color:{color}; font-weight:bold;'>Predicted Sentiment: {sentiment} ({conf:.2f}% confidence)</span>",
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown("---")
 
             except Exception as e:
                 st.error(f"❌ Error: {e}")
@@ -76,3 +90,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# To run the streamlit app, use:
+# streamlit run .\src\app.py --server.fileWatcherType none
