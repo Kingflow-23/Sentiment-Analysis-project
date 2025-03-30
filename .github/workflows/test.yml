@@ -1,0 +1,51 @@
+name: Run Tests and Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Run Unit & Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests
+        run: |
+          pytest --disable-warnings -v --cov=src tests/
+
+  lint:
+    name: Run Code Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Linters
+        run: |
+          pip install flake8 black
+
+      - name: Run Flake8 (Code Quality Check)
+        run: flake8 src/
+
+      - name: Run Black (Code Formatting Check)
+        run: black --check src/
