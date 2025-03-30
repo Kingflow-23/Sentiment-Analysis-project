@@ -26,6 +26,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
+          export PYTHONPATH=.
           pytest --disable-warnings -v --cov=src tests/
 
       - name: Run Black (Code Formatting Check)
