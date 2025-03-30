@@ -2,7 +2,6 @@ import logging
 
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
 
 from config import *
 from src.db_logger import log_prediction

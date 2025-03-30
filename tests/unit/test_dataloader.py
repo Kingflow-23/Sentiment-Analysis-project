@@ -3,7 +3,6 @@ import torch
 import pandas as pd
 
 from transformers import AutoTokenizer
-from torch.utils.data import DataLoader
 
 from config import *
 from dataset_config import FAKE_DATASET

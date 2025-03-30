@@ -1,7 +1,6 @@
 import os
 import torch
 import pytest
-import numpy as np
 
 from unittest.mock import Mock
 from transformers import AutoTokenizer
