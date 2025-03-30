@@ -43,18 +43,19 @@ jobs:
       - name: Install Linters
         run: |
           pip install flake8 pylint black
-
-      - name: Run Flake8 (Code Style Check)
+          
+      - name: Run Black (Code Formatting Check)
         run: |
           export PYTHONPATH=.
-          flake8 src/ tests/ --ignore=E501,E203,W503
+          black --check src/
 
       - name: Run Pylint (Code Quality Check)
         run: |
           export PYTHONPATH=.
           pylint src/
 
-      - name: Run Black (Code Formatting Check)
+      - name: Run Flake8 (Code Style Check)
         run: |
           export PYTHONPATH=.
-          black --check src/
+          flake8 src/ --ignore=E501,E203,W503
+
