@@ -29,6 +29,8 @@ TEST_DATA_DIR = "dataset/test_datasets"  # folder containing test data files
 os.makedirs(TEST_DATA_DIR, exist_ok=True)
 
 # Test dataset paths
+FAKE_DATASET_PATH = "dataset/test_datasets/fake_dataset.xlsx"
+
 NON_EXISTING_DATASET_PATH = "dataset/test_datasets/non_existing.csv"
 EMPTY_DATASET_PATH = "dataset/test_datasets/empty.csv"
 MISSING_COLUMNS_DATASET_PATH = "dataset/test_datasets/missing_columns.csv"
