@@ -27,6 +27,7 @@ jobs:
 
       - name: Run Model Evaluation
         run: |
+          export PYTHONPATH=.
           python tests/evaluation/evaluate_model.py 
 
       - name: Upload Evaluation Artifacts
