@@ -19,7 +19,7 @@ def load_model(path_to_model: str, n_classes: int, device: str) -> SentimentClas
     if not os.path.exists(path_to_model):
         raise ValueError(f"Model path {path_to_model} does not exist.")
     model = SentimentClassifier(n_classes=n_classes)
-    model.load_state_dict(torch.load(path_to_model, map_location=device))
+    model.load_state_dict(torch.load(path_to_model, map_location=device, weights_only=False))
     model.to(device)
     model.eval()
     return model
