@@ -7,7 +7,7 @@ from transformers import AutoTokenizer
 from sklearn.model_selection import train_test_split
 
 # Load tokenizer for BERT
-tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME, weights_only=False)
+tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
 
 
 def clean_text(text: str) -> str:
