@@ -57,9 +57,7 @@ def setup_model_3_classes():
     model_path = PRETRAINED_MODEL_3_CLASS_PATH
 
     model = SentimentClassifier(n_classes=3)
-    model.load_state_dict(
-        torch.load(model_path, map_location="cpu", weights_only=False), strict=False
-    )
+    model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
     model.eval()
 
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
@@ -80,9 +78,7 @@ def setup_model_5_classes():
     model_path = PRETRAINED_MODEL_5_CLASS_PATH
 
     model = SentimentClassifier(n_classes=5)
-    model.load_state_dict(
-        torch.load(model_path, map_location="cpu", weights_only=False), strict=False
-    )
+    model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
     model.eval()
 
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
@@ -98,9 +94,7 @@ def setup_model():
         else PRETRAINED_MODEL_3_CLASS_PATH
     )
     model = SentimentClassifier(n_classes=N_CLASSES)
-    model.load_state_dict(
-        torch.load(model_path, map_location="cpu", weights_only=False), strict=False
-    )
+    model.load_state_dict(torch.load(model_path, map_location="cpu"), strict=False)
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
     return model, tokenizer
@@ -193,7 +187,7 @@ def test_load_model_and_device(mock_torch_load, mock_model):
     )
 
     # Call torch.load (monkeypatched by mock_torch_load) to get a simulated state dict.
-    state_dict = torch.load(model_path, map_location="cpu", weights_only=False)
+    state_dict = torch.load(model_path, map_location="cpu")
 
     # Load the state dict into the mock model
     mock_model.load_state_dict(state_dict, strict=False)
