@@ -2,7 +2,7 @@ name: Model Evaluation
 
 on:
   workflow_run:
-    workflows: ["Run Tests and Lint"] 
+    workflows: ["Run Tests and Lint"]
     types:
       - completed
 
@@ -33,16 +33,34 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: evaluation-artifacts
-          path: output/model_output/evaluation/
+          path: output/model_output/evaluation/test_run_*/
 
-      - name: Check Performance Threshold
+      - name: Check Performance Thresholds
         run: |
-          # Extract accuracy from metrics.txt
-          ACCURACY=$(grep "Validation Accuracy" output/model_output/evaluation/metrics.txt | awk '{print $NF}')
-          echo "Model Accuracy: $ACCURACY"
-          
-          # Set a threshold of 0.50 (50% accuracy)
-          if (( $(echo "$ACCURACY < 0.50" | bc -l) )); then
-            echo "Model accuracy is below threshold. Failing the workflow."
+          # Get the latest test run folder
+          LATEST_TEST_RUN=$(ls -td output/model_output/evaluation/test_run_* | head -n 1)
+
+          if [ -z "$LATEST_TEST_RUN" ]; then
+            echo "❌ No evaluation results found!"
             exit 1
           fi
+
+          for config in "merged_labels 0.60" "original_labels 0.50"; do
+            MODEL_NAME=$(echo $config | awk '{print $1}')
+            THRESHOLD=$(echo $config | awk '{print $2}')
+            
+            METRICS_FILE="$LATEST_TEST_RUN/$MODEL_NAME/metrics.txt"
+            
+            if [ -f "$METRICS_FILE" ]; then
+              ACCURACY=$(grep "Validation Accuracy" "$METRICS_FILE" | sed 's/[^0-9.]//g')
+              echo "$MODEL_NAME Model Accuracy: $ACCURACY (Threshold: $THRESHOLD)"
+
+              if [ $(echo "$ACCURACY < $THRESHOLD" | bc -l) -eq 1 ]; then
+                echo "❌ $MODEL_NAME model accuracy is below threshold ($THRESHOLD). Failing the workflow."
+                exit 1
+              fi
+            else
+              echo "⚠️ Metrics file not found for $MODEL_NAME model."
+              exit 1
+            fi
+          done
