@@ -520,9 +520,3 @@ Improve the Streamlit app with additional interactive features and visualization
 - [GitHub Cheat Sheet: Git Best Practices](https://education.github.com/git-cheat-sheet-education.pdf)
 - [Kaggle Notebook: Sentiment Analysis using BERT](https://www.kaggle.com/code/prakharrathi25/sentiment-analysis-using-bert)
 - [Hugging Face Documentation: AutoTokenizer & AutoModelForSequenceClassification](https://huggingface.co/docs/transformers/index)
-
----
-
-## **Team Members**
-- **[Florian HOUNKPATIN](https://www.linkedin.com/in/florian-hounkpatin/)** : Data Scientist 
-- **[Ephraim KOSSONOU](https://www.linkedin.com/in/ephraïm-kossonou/)** : Data Analyst | Engineer
